@@ -37,20 +37,6 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  openGraph: {
-    title: "BlinkSplit — Split Bills in <30s on Solana",
-    description:
-      "AI receipt scanner + Solana Blinks for instant bill splitting. Drop a link in the group chat, everyone pays their exact USDC share.",
-    type: "website",
-    siteName: "BlinkSplit",
-    locale: "en_US",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "BlinkSplit — Split Bills in <30s on Solana",
-    description:
-      "AI receipt scanner + Solana Blinks for instant bill splitting.",
-  },
 };
 
 export default function RootLayout({
@@ -64,7 +50,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col bg-background text-text-primary">{children}</body>
+      <body suppressHydrationWarning className="min-h-full flex flex-col bg-background text-text-primary">{children}</body>
     </html>
   );
 }
