@@ -46,25 +46,27 @@ export interface SplitSession {
   status: "assigning" | "generated" | "complete";
 }
 
-const DEMO_RECEIPT: Receipt = {
-  restaurant: "The Golden Dragon",
-  items: [
-    { id: 1, name: "Pad Thai", price: 14.95 },
-    { id: 2, name: "Green Curry", price: 16.50 },
-    { id: 3, name: "Spring Rolls (2x)", price: 8.00 },
-    { id: 4, name: "Mango Sticky Rice", price: 9.25 },
-    { id: 5, name: "Thai Iced Tea", price: 5.50 },
-  ],
-  subtotal: 54.20,
-  tax: 4.88,
-  tip: 10.00,
-  total: 69.08,
-};
+const RESTAURANTS = ["The Golden Dragon", "Luigi's Trattoria", "Sushi Zen", "Burger Joint", "Taco Fiesta"];
+const ITEMS = [
+  { name: "Pad Thai", price: [12.95, 14.95, 16.95] },
+  { name: "Green Curry", price: [14.50, 16.50, 18.50] },
+  { name: "Spring Rolls (2x)", price: [6.00, 8.00, 10.00] },
+  { name: "Mango Sticky Rice", price: [7.25, 9.25, 11.25] },
+  { name: "Thai Iced Tea", price: [4.50, 5.50, 6.50] },
+  { name: "Spicy Tuna Roll", price: [10.00, 12.00, 14.00] },
+  { name: "Margherita Pizza", price: [16.00, 18.00, 20.00] },
+  { name: "Cheeseburger", price: [12.00, 14.00, 16.00] },
+  { name: "Tacos (3x)", price: [11.00, 13.00, 15.00] },
+  { name: "Nachos", price: [9.00, 11.00, 13.00] },
+];
 
-const DEMO_PEOPLE: Person[] = [
+const ALL_PEOPLE: Person[] = [
   { id: "p1", name: "Alice", wallet: "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM", color: "bg-pink-500" },
   { id: "p2", name: "Bob", wallet: "HN7cABqLq46Es1jh92dQQisAi5YqV7p8w7FX7KwMbTka", color: "bg-blue-500" },
   { id: "p3", name: "Charlie", wallet: "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU", color: "bg-emerald-500" },
+  { id: "p4", name: "Diana", wallet: "7RzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM", color: "bg-purple-500" },
+  { id: "p5", name: "Eve", wallet: "2N7cABqLq46Es1jh92dQQisAi5YqV7p8w7FX7KwMbTka", color: "bg-yellow-500" },
+  { id: "p6", name: "Frank", wallet: "8zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU", color: "bg-orange-500" },
 ];
 
 export async function getSplit(id: string): Promise<SplitSession | undefined> {
@@ -92,7 +94,7 @@ export async function createSplit(receipt: Receipt): Promise<SplitSession> {
   const session: SplitSession = {
     id,
     receipt,
-    people: [...DEMO_PEOPLE],
+    people: getDemoPeople(),
     assignments: {},
     blinks: [],
     createdAt: new Date().toISOString(),
@@ -244,11 +246,41 @@ export async function getAllSplits(): Promise<SplitSession[]> {
 }
 
 export function getDemoReceipt(): Receipt {
-  return { ...DEMO_RECEIPT, items: DEMO_RECEIPT.items.map((i) => ({ ...i })) };
+  const restaurant = RESTAURANTS[Math.floor(Math.random() * RESTAURANTS.length)];
+  
+  const numItems = Math.floor(Math.random() * 4) + 3; // 3 to 6 items
+  const shuffledItems = [...ITEMS].sort(() => 0.5 - Math.random());
+  const selectedItems = shuffledItems.slice(0, numItems);
+
+  let subtotal = 0;
+  const items = selectedItems.map((item, index) => {
+    const price = item.price[Math.floor(Math.random() * item.price.length)];
+    subtotal += price;
+    return {
+      id: index + 1,
+      name: item.name,
+      price: price
+    };
+  });
+
+  const tax = parseFloat((subtotal * 0.09).toFixed(2));
+  const tip = parseFloat((subtotal * 0.18).toFixed(2));
+  const total = parseFloat((subtotal + tax + tip).toFixed(2));
+
+  return {
+    restaurant,
+    items,
+    subtotal: parseFloat(subtotal.toFixed(2)),
+    tax,
+    tip,
+    total,
+  };
 }
 
 export function getDemoPeople(): Person[] {
-  return DEMO_PEOPLE.map((p) => ({ ...p }));
+  const numPeople = Math.floor(Math.random() * 3) + 3; // 3 to 5 people
+  const shuffledPeople = [...ALL_PEOPLE].sort(() => 0.5 - Math.random());
+  return shuffledPeople.slice(0, numPeople).map((p, idx) => ({ ...p, id: `p${idx + 1}` }));
 }
 
 function generateId(): string {
