@@ -13,8 +13,44 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BlinkSplit",
-  description: "Split the bill. Drop the link. Get paid.",
+  title: {
+    default: "BlinkSplit — AI Receipt Scanner + Solana Blinks",
+    template: "%s | BlinkSplit",
+  },
+  description:
+    "Snap a receipt. AI splits it. Solana Blinks collect every share in 30 seconds. No app downloads.",
+  metadataBase: new URL("https://100xdevs.vercel.app"),
+  keywords: [
+    "Solana",
+    "Blinks",
+    "bill splitting",
+    "receipt scanner",
+    "AI",
+    "USDC",
+    "crypto payments",
+    "group payments",
+  ],
+  authors: [{ name: "BlinkSplit" }],
+  creator: "BlinkSplit",
+  category: "Finance",
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    title: "BlinkSplit — Split Bills in <30s on Solana",
+    description:
+      "AI receipt scanner + Solana Blinks for instant bill splitting. Drop a link in the group chat, everyone pays their exact USDC share.",
+    type: "website",
+    siteName: "BlinkSplit",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "BlinkSplit — Split Bills in <30s on Solana",
+    description:
+      "AI receipt scanner + Solana Blinks for instant bill splitting.",
+  },
 };
 
 export default function RootLayout({
