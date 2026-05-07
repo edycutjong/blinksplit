@@ -1,8 +1,4 @@
-/**
- * In-memory store for BlinkSplit demo.
- * In production, this would be backed by Supabase.
- * Uses a simple Map for split sessions with deterministic IDs.
- */
+import { supabase } from "./supabase";
 
 export interface ReceiptItem {
   id: number;
@@ -50,10 +46,6 @@ export interface SplitSession {
   status: "assigning" | "generated" | "complete";
 }
 
-// In-memory store (server-side singleton)
-const splits = new Map<string, SplitSession>();
-
-// Seed the demo split
 const DEMO_RECEIPT: Receipt = {
   restaurant: "The Golden Dragon",
   items: [
@@ -75,15 +67,27 @@ const DEMO_PEOPLE: Person[] = [
   { id: "p3", name: "Charlie", wallet: "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU", color: "bg-emerald-500" },
 ];
 
-export function getStore() {
-  return splits;
+export async function getSplit(id: string): Promise<SplitSession | undefined> {
+  const { data, error } = await supabase
+    .from("splits")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error || !data) return undefined;
+
+  return {
+    id: data.id,
+    receipt: data.receipt as Receipt,
+    people: data.people as Person[],
+    assignments: data.assignments as Record<number, string[]>,
+    blinks: data.blinks as BlinkCard[],
+    createdAt: data.created_at,
+    status: data.status as SplitSession["status"],
+  };
 }
 
-export function getSplit(id: string): SplitSession | undefined {
-  return splits.get(id);
-}
-
-export function createSplit(receipt: Receipt): SplitSession {
+export async function createSplit(receipt: Receipt): Promise<SplitSession> {
   const id = generateId();
   const session: SplitSession = {
     id,
@@ -94,25 +98,45 @@ export function createSplit(receipt: Receipt): SplitSession {
     createdAt: new Date().toISOString(),
     status: "assigning",
   };
-  splits.set(id, session);
+
+  const { error } = await supabase.from("splits").insert({
+    id: session.id,
+    receipt: session.receipt,
+    people: session.people,
+    assignments: session.assignments,
+    blinks: session.blinks,
+    status: session.status,
+    created_at: session.createdAt,
+  });
+
+  if (error) {
+    console.error("Error creating split:", error);
+    throw new Error("Failed to create split");
+  }
+
   return session;
 }
 
-export function updateAssignments(
+export async function updateAssignments(
   splitId: string,
   assignments: Record<number, string[]>,
   people: Person[]
-): SplitSession | null {
-  const session = splits.get(splitId);
-  if (!session) return null;
-  session.assignments = assignments;
-  session.people = people;
-  splits.set(splitId, session);
-  return session;
+): Promise<SplitSession | null> {
+  const { error } = await supabase
+    .from("splits")
+    .update({ assignments, people })
+    .eq("id", splitId);
+
+  if (error) {
+    console.error("Error updating assignments:", error);
+    return null;
+  }
+
+  return getSplit(splitId) || null;
 }
 
-export function generateBlinks(splitId: string, baseUrl: string): SplitSession | null {
-  const session = splits.get(splitId);
+export async function generateBlinks(splitId: string, baseUrl: string): Promise<SplitSession | null> {
+  const session = await getSplit(splitId);
   if (!session) return null;
 
   const { receipt, assignments, people } = session;
@@ -159,14 +183,21 @@ export function generateBlinks(splitId: string, baseUrl: string): SplitSession |
     };
   });
 
-  session.blinks = blinks;
-  session.status = "generated";
-  splits.set(splitId, session);
-  return session;
+  const { error } = await supabase
+    .from("splits")
+    .update({ blinks, status: "generated" })
+    .eq("id", splitId);
+
+  if (error) {
+    console.error("Error generating blinks:", error);
+    return null;
+  }
+
+  return getSplit(splitId) || null;
 }
 
-export function markPaid(splitId: string, personId: string): SplitSession | null {
-  const session = splits.get(splitId);
+export async function markPaid(splitId: string, personId: string): Promise<SplitSession | null> {
+  const session = await getSplit(splitId);
   if (!session) return null;
 
   const blink = session.blinks.find((b) => b.personId === personId);
@@ -175,19 +206,41 @@ export function markPaid(splitId: string, personId: string): SplitSession | null
     blink.paidAt = new Date().toISOString();
   }
 
-  // Check if all paid
+  let newStatus = session.status;
   if (session.blinks.every((b) => b.paymentStatus === "paid")) {
-    session.status = "complete";
+    newStatus = "complete";
   }
 
-  splits.set(splitId, session);
-  return session;
+  const { error } = await supabase
+    .from("splits")
+    .update({ blinks: session.blinks, status: newStatus })
+    .eq("id", splitId);
+
+  if (error) {
+    console.error("Error marking paid:", error);
+    return null;
+  }
+
+  return getSplit(splitId) || null;
 }
 
-export function getAllSplits(): SplitSession[] {
-  return Array.from(splits.values()).sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
+export async function getAllSplits(): Promise<SplitSession[]> {
+  const { data, error } = await supabase
+    .from("splits")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error || !data) return [];
+
+  return data.map((d) => ({
+    id: d.id,
+    receipt: d.receipt as Receipt,
+    people: d.people as Person[],
+    assignments: d.assignments as Record<number, string[]>,
+    blinks: d.blinks as BlinkCard[],
+    createdAt: d.created_at,
+    status: d.status as SplitSession["status"],
+  }));
 }
 
 export function getDemoReceipt(): Receipt {

@@ -10,7 +10,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const session = getSplit(id);
+  const session = await getSplit(id);
 
   if (!session) {
     return NextResponse.json({ error: "Split not found" }, { status: 404 });
@@ -27,7 +27,7 @@ export async function PUT(
 
   try {
     const body = await request.json();
-    const session = updateAssignments(id, body.assignments, body.people);
+    const session = await updateAssignments(id, body.assignments, body.people);
 
     if (!session) {
       return NextResponse.json({ error: "Split not found" }, { status: 404 });

@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const receipt = body.receipt || getDemoReceipt();
-    const session = createSplit(receipt);
+    const session = await createSplit(receipt);
 
     return NextResponse.json(session, { status: 201 });
   } catch (err) {
@@ -22,6 +22,6 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  const history = getAllSplits();
+  const history = await getAllSplits();
   return NextResponse.json({ splits: history, total: history.length });
 }

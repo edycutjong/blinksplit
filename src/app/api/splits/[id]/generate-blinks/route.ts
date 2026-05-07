@@ -14,7 +14,7 @@ export async function POST(
   const url = new URL(request.url);
   const baseUrl = `${url.protocol}//${url.host}`;
 
-  const session = generateBlinks(id, baseUrl);
+  const session = await generateBlinks(id, baseUrl);
 
   if (!session) {
     return NextResponse.json({ error: "Split not found" }, { status: 404 });

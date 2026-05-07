@@ -19,7 +19,7 @@ export async function POST(
       return NextResponse.json({ error: "Missing personId" }, { status: 400 });
     }
 
-    const session = markPaid(id, personId);
+    const session = await markPaid(id, personId);
 
     if (!session) {
       return NextResponse.json({ error: "Split not found" }, { status: 404 });
