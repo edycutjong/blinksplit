@@ -6,7 +6,7 @@
  * Constructs and returns a Solana transaction for the payer to sign
  */
 import { NextRequest, NextResponse } from "next/server";
-import { getStore } from "@/lib/store";
+import { getSplit } from "@/lib/store";
 import {
   createPostResponse,
   ACTIONS_CORS_HEADERS,
@@ -15,14 +15,20 @@ import {
   PublicKey,
   Transaction,
   Connection,
-  SystemProgram,
 } from "@solana/web3.js";
+import {
+  createTransferInstruction,
+  getAssociatedTokenAddress,
+} from "@solana/spl-token";
 
 // CORS headers required for Solana Actions spec
 const headers = {
   ...ACTIONS_CORS_HEADERS,
   "Content-Type": "application/json",
 };
+
+// USDC Mint on Devnet (use EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v for Mainnet)
+const USDC_MINT = new PublicKey("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU");
 
 export async function GET(
   _request: NextRequest,
@@ -32,8 +38,7 @@ export async function GET(
   const [splitId, personId] = paymentId.split("_");
 
   // Find the split and blink
-  const store = getStore();
-  const session = store.get(splitId);
+  const session = await getSplit(splitId);
 
   if (!session) {
     return NextResponse.json(
@@ -90,8 +95,7 @@ export async function POST(
       );
     }
 
-    const store = getStore();
-    const session = store.get(splitId);
+    const session = await getSplit(splitId);
 
     if (!session) {
       return NextResponse.json(
@@ -121,18 +125,22 @@ export async function POST(
 
     const { blockhash } = await connection.getLatestBlockhash();
 
-    // Convert USDC amount to lamports (for demo using SOL, production would use SPL token transfer)
-    const lamports = Math.round(blink.totalOwed * 1e7); // ~0.01 SOL per $1 for demo
+    // USDC has 6 decimals
+    const amount = Math.round(blink.totalOwed * 1e6);
+
+    const fromAta = await getAssociatedTokenAddress(USDC_MINT, payerKey);
+    const toAta = await getAssociatedTokenAddress(USDC_MINT, recipientKey);
 
     const tx = new Transaction({
       recentBlockhash: blockhash,
       feePayer: payerKey,
     }).add(
-      SystemProgram.transfer({
-        fromPubkey: payerKey,
-        toPubkey: recipientKey,
-        lamports,
-      })
+      createTransferInstruction(
+        fromAta,
+        toAta,
+        payerKey,
+        amount
+      )
     );
 
     const payload = await createPostResponse({
