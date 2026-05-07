@@ -140,7 +140,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white overflow-hidden selection:bg-primary/30">
+    <div className="min-h-screen bg-[#0A0A0A] bg-mesh text-white overflow-hidden selection:bg-primary/30">
       
       {/* Navigation */}
       <nav className="fixed top-0 inset-x-0 z-50 border-b border-white/5 bg-[#0A0A0A]/80 backdrop-blur-md">
@@ -207,7 +207,7 @@ export default function Home() {
               <button
                 onClick={triggerFileInput}
                 disabled={isScanning}
-                className="group relative w-full sm:w-auto px-8 py-4 bg-primary text-background font-bold text-lg rounded-full hover:bg-primary/90 transition-all shadow-[0_0_30px_rgba(6,182,212,0.3)] hover:shadow-[0_0_40px_rgba(6,182,212,0.5)] disabled:opacity-80 disabled:cursor-wait overflow-hidden"
+                className="btn-shine group relative w-full sm:w-auto px-8 py-4 bg-primary text-background font-bold text-lg rounded-full hover:bg-primary/90 transition-all shadow-[0_0_30px_rgba(6,182,212,0.3)] hover:shadow-[0_0_40px_rgba(6,182,212,0.5)] disabled:opacity-80 disabled:cursor-wait overflow-hidden"
               >
                 <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                 {isScanning ? (
