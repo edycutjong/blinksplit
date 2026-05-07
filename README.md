@@ -1,8 +1,8 @@
 <div align="center">
-  <img src="docs/readme.png" alt="BlinkSplit Hero" width="100%">
-  
   <h3>⚡ BlinkSplit</h3>
   <p><em>AI-powered receipt scanner that generates Solana Blinks — drop a link in the group chat, and everyone pays their exact USDC share instantly.</em></p>
+
+  <img src="docs/readme.png" alt="BlinkSplit Hero" width="100%">
   
   [![Built with Next.js 16](https://img.shields.io/badge/Next.js-16-black.svg)](https://nextjs.org)
   [![Solana](https://img.shields.io/badge/Solana-Blinks-9945FF.svg)](https://solana.com)
@@ -53,13 +53,13 @@ The entire flow takes **under 30 seconds**.
 
 ## 🏆 Hackathon
 
-Built for **Colosseum Frontier** — 100xDevs Consumer Track.
+Built for **[Colosseum Frontier](https://colosseum.org/frontier)** — [100xDevs](https://100xdevs.com) Consumer Track.
 
 ## 🚀 Run Locally
 
 ```bash
-git clone https://github.com/edycutjong/frontier-100xdevs.git
-cd frontier-100xdevs
+git clone https://github.com/edycutjong/blinksplit.git
+cd blinksplit
 npm install
 cp .env.example .env.local   # Add your API keys
 npm run dev
