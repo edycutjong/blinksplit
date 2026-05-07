@@ -1,4 +1,4 @@
-import { createPostResponse, encodeURL } from "@solana/actions";
+import { createPostResponse, encodeURL, type ActionPostResponse } from "@solana/actions";
 import { PublicKey, Transaction, Connection, SystemProgram } from "@solana/web3.js";
 
 export class BlinkSplitService {
@@ -8,8 +8,8 @@ export class BlinkSplitService {
   init() {
     if (this.initialized) return;
     
-    // Connect to Solana mainnet or devnet based on env
-    const endpoint = process.env.NEXT_PUBLIC_RPC_URL || "https://api.mainnet-beta.solana.com";
+    // Connect to Solana devnet or mainnet based on env
+    const endpoint = process.env.NEXT_PUBLIC_RPC_URL || "https://api.devnet.solana.com";
     this.connection = new Connection(endpoint);
     
     this.initialized = true;
@@ -27,13 +27,13 @@ export class BlinkSplitService {
       
       // Use the actual encodeURL from @solana/actions
       return encodeURL({ link: url }).toString();
-    } catch (_err) {
+    } catch {
       console.warn("[Blinks SDK] URL encoding failed, falling back to basic string format.");
       return `solana-action:https://blinksplit.com/api/pay?amount=${amountUsdc}&to=${recipient}`;
     }
   }
 
-  async simulateBlinkTransaction(payer: string, amount: number): Promise<any> {
+  async simulateBlinkTransaction(payer: string, amount: number): Promise<ActionPostResponse | { transaction: string; message: string }> {
     this.init();
     console.log(`[Blinks SDK] Creating transaction for payer: ${payer}, amount: ${amount}`);
     
