@@ -12,8 +12,8 @@ const initialPayers = [
 
 export default function PaymentTracker() {
   const router = useRouter();
-  const [payers, setPayers] = useState(initialPayers);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [payers, setPayers] = useState(() => initialPayers);
+  const [copiedId, setCopiedId] = useState<string | null>(() => null);
 
   const handleCopy = (id: string) => {
     setCopiedId(id);

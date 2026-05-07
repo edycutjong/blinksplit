@@ -18,14 +18,14 @@ const COLORS = ["bg-pink-500", "bg-blue-500", "bg-emerald-500", "bg-amber-500", 
 export default function SplitPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
-  const [session, setSession] = useState<SplitSession | null>(null);
-  const [assignments, setAssignments] = useState<Record<number, string[]>>({});
-  const [people, setPeople] = useState<Person[]>([]);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [newName, setNewName] = useState("");
-  const [newWallet, setNewWallet] = useState("");
-  const [showAdd, setShowAdd] = useState(false);
+  const [session, setSession] = useState<SplitSession | null>(() => null);
+  const [assignments, setAssignments] = useState<Record<number, string[]>>(() => ({}));
+  const [people, setPeople] = useState<Person[]>(() => []);
+  const [isGenerating, setIsGenerating] = useState(() => false);
+  const [loading, setLoading] = useState(() => true);
+  const [newName, setNewName] = useState(() => "");
+  const [newWallet, setNewWallet] = useState(() => "");
+  const [showAdd, setShowAdd] = useState(() => false);
 
   useEffect(() => {
     fetch(`/api/splits/${id}`)

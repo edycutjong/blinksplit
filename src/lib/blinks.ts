@@ -27,7 +27,7 @@ export class BlinkSplitService {
       
       // Use the actual encodeURL from @solana/actions
       return encodeURL({ link: url }).toString();
-    } catch (err) {
+    } catch (_err) {
       console.warn("[Blinks SDK] URL encoding failed, falling back to basic string format.");
       return `solana-action:https://blinksplit.com/api/pay?amount=${amountUsdc}&to=${recipient}`;
     }

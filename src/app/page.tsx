@@ -8,7 +8,7 @@ import { Receipt, Zap, Link as LinkIcon, Split, Camera, Bot, Send, Shield, Smart
 
 export default function Home() {
   const router = useRouter();
-  const [isScanning, setIsScanning] = useState(false);
+  const [isScanning, setIsScanning] = useState(() => false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 

@@ -132,7 +132,7 @@ export async function updateAssignments(
     return null;
   }
 
-  return getSplit(splitId) || null;
+  return (await getSplit(splitId)) || null;
 }
 
 export async function generateBlinks(splitId: string, baseUrl: string): Promise<SplitSession | null> {
@@ -193,7 +193,7 @@ export async function generateBlinks(splitId: string, baseUrl: string): Promise<
     return null;
   }
 
-  return getSplit(splitId) || null;
+  return (await getSplit(splitId)) || null;
 }
 
 export async function markPaid(splitId: string, personId: string): Promise<SplitSession | null> {
@@ -221,7 +221,7 @@ export async function markPaid(splitId: string, personId: string): Promise<Split
     return null;
   }
 
-  return getSplit(splitId) || null;
+  return (await getSplit(splitId)) || null;
 }
 
 export async function getAllSplits(): Promise<SplitSession[]> {

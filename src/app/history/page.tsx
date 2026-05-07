@@ -9,14 +9,15 @@ interface SplitSummary {
   id: string;
   receipt: { restaurant: string; total: number };
   blinks: { name: string; totalOwed: number; paymentStatus: string }[];
+  people?: { id: string }[];
   createdAt: string;
   status: string;
 }
 
 export default function HistoryPage() {
   const router = useRouter();
-  const [splits, setSplits] = useState<SplitSummary[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [splits, setSplits] = useState<SplitSummary[]>(() => []);
+  const [loading, setLoading] = useState(() => true);
 
   useEffect(() => {
     fetch("/api/splits")
