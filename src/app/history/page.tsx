@@ -88,7 +88,7 @@ export default function HistoryPage() {
             </div>
             <div>
               <h2 className="text-2xl font-bold mb-2">No active splits</h2>
-              <p className="text-white/50 max-w-sm">You haven't split any bills yet. Scan your first receipt to see it here.</p>
+              <p className="text-white/50 max-w-sm">You haven&apos;t split any bills yet. Scan your first receipt to see it here.</p>
             </div>
             <button onClick={() => router.push("/")} className="px-8 py-4 bg-primary text-background rounded-full font-bold hover:bg-primary/90 transition-colors shadow-[0_0_20px_rgba(6,182,212,0.3)]">
               Scan Receipt &rarr;

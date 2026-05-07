@@ -13,7 +13,7 @@ export default function NotFound() {
       <h2 className="mt-8 text-3xl font-bold tracking-tight text-text-primary">Lost in the Mempool</h2>
       
       <p className="mt-4 text-lg text-text-muted max-w-md mx-auto">
-        We couldn't find the transaction you're looking for. It might have been dropped, moved, or never existed.
+        We couldn&apos;t find the transaction you&apos;re looking for. It might have been dropped, moved, or never existed.
       </p>
       
       <div className="mt-10">
