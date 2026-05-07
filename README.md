@@ -14,7 +14,7 @@
 ## 📸 See it in Action
 
 <div align="center">
-  <img src="docs/og-image.png" alt="BlinkSplit Demo" width="800">
+  <img src="src/app/opengraph-image.png" alt="BlinkSplit Demo" width="800">
 </div>
 
 ## 💡 The Problem
