@@ -2,6 +2,7 @@
 
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 interface ReceiptItem { id: number; name: string; price: number; }
 interface Person { id: string; name: string; wallet: string; color: string; }
@@ -32,8 +33,17 @@ export default function SplitPage({ params }: { params: Promise<{ id: string }> 
       .then((r) => r.json())
       .then((data) => {
         setSession(data);
-        setAssignments(data.assignments || {});
-        setPeople(data.people || []);
+        const fetchedPeople = data.people || [];
+        setPeople(fetchedPeople);
+        
+        let initialAssignments = data.assignments || {};
+        if (Object.keys(initialAssignments).length === 0 && data.receipt?.items && fetchedPeople.length > 0) {
+          const allPersonIds = fetchedPeople.map((p: Person) => p.id);
+          data.receipt.items.forEach((item: ReceiptItem) => {
+            initialAssignments[item.id] = allPersonIds;
+          });
+        }
+        setAssignments(initialAssignments);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -220,15 +230,32 @@ export default function SplitPage({ params }: { params: Promise<{ id: string }> 
             </div>
           </div>
 
-          <button onClick={handleGenerate} disabled={isGenerating || !allAssigned}
-            className="w-full py-5 bg-primary text-background font-bold text-lg rounded-2xl hover:bg-primary/90 transition-all shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] disabled:opacity-50 disabled:cursor-not-allowed">
+          <motion.button 
+            onClick={handleGenerate} 
+            disabled={isGenerating || !allAssigned}
+            whileHover={allAssigned && !isGenerating ? { scale: 1.02 } : {}}
+            whileTap={allAssigned && !isGenerating ? { scale: 0.98 } : {}}
+            className="w-full py-5 bg-primary text-background font-bold text-lg rounded-2xl transition-all shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden relative"
+          >
             {isGenerating ? (
-              <span className="flex items-center justify-center gap-2">
+              <span className="flex items-center justify-center gap-2 relative z-10">
                 <span className="w-5 h-5 border-2 border-background/30 border-t-background rounded-full animate-spin" />
                 Generating Blinks...
               </span>
-            ) : allAssigned ? "⚡ Generate Blinks" : "Assign all items first"}
-          </button>
+            ) : allAssigned ? (
+              <span className="relative z-10">Generate Blinks</span>
+            ) : (
+              <span className="relative z-10">Assign all items first</span>
+            )}
+            
+            {allAssigned && !isGenerating && (
+              <motion.div 
+                className="absolute inset-0 bg-linear-to-r from-transparent via-white/25 to-transparent skew-x-12"
+                animate={{ x: ["-100%", "200%"] }}
+                transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+              />
+            )}
+          </motion.button>
         </div>
       </div>
     </div>
