@@ -41,15 +41,9 @@ The entire flow takes **under 30 seconds**.
 - 💬 **Share via Link** — Drop Blink URLs in WhatsApp, Discord, X — anywhere
 - 📜 **Receipt History** — Supabase-stored history of past splits
 
-## 🏗️ Tech Stack
+## 🏗️ Architecture & Tech Stack
 
-| Layer | Technology |
-|---|---|
-| **Frontend** | Next.js 16, React 19, Tailwind CSS v4 |
-| **AI** | GPT-4o Vision (receipt OCR) |
-| **Payments** | Solana Actions / Blinks, USDC |
-| **Backend** | Supabase (PostgreSQL + Realtime) |
-| **Deploy** | Vercel |
+For full technical details, API endpoints, and database schemas, see the [Architecture Documentation](docs/ARCHITECTURE.md).
 
 ## 🏆 Hackathon
 
