@@ -43,7 +43,7 @@ export default function HistoryPage() {
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-white overflow-hidden relative selection:bg-primary/30">
       {/* Dynamic Background Decorations */}
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent z-10" />
+      <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-primary/50 to-transparent z-10" />
       <motion.div 
         animate={{ scale: [1, 1.2, 1], opacity: [0.05, 0.1, 0.05] }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
@@ -54,13 +54,13 @@ export default function HistoryPage() {
         transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
         className="absolute top-1/2 -right-1/4 w-[800px] h-[800px] bg-accent/20 rounded-full blur-[150px] -z-10 mix-blend-screen" 
       />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] -z-10" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px] mask-[linear-gradient(180deg,white,rgba(255,255,255,0))] -z-10" />
 
       {/* Navigation */}
       <nav className="fixed top-0 inset-x-0 z-50 border-b border-white/5 bg-[#0A0A0A]/80 backdrop-blur-md">
         <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 font-brand font-bold text-xl tracking-tight">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary to-accent flex items-center justify-center">
               <Split className="w-4 h-4 text-white" />
             </div>
             BlinkSplit
@@ -73,7 +73,7 @@ export default function HistoryPage() {
           <button onClick={() => router.push("/")} className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center border border-white/10 transition-colors">
             <ArrowLeft className="w-5 h-5 text-white/80" />
           </button>
-          <h1 className="text-4xl md:text-5xl font-brand font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white to-white/60">
+          <h1 className="text-4xl md:text-5xl font-brand font-bold tracking-tight text-transparent bg-clip-text bg-linear-to-br from-white to-white/60">
             Split History
           </h1>
         </div>
@@ -81,7 +81,7 @@ export default function HistoryPage() {
         {splits.length === 0 ? (
           <motion.div 
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-            className="flex flex-col items-center gap-6 py-24 text-center bg-white/[0.02] border border-white/5 rounded-3xl backdrop-blur-sm"
+            className="flex flex-col items-center gap-6 py-24 text-center bg-white/2 border border-white/5 rounded-3xl backdrop-blur-sm"
           >
             <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
               <Receipt className="w-10 h-10 text-primary opacity-80" />
@@ -109,7 +109,7 @@ export default function HistoryPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: index * 0.05 }}
                   onClick={() => router.push(s.blinks?.length ? `/split/${s.id}/blinks` : `/split/${s.id}`)}
-                  className="w-full text-left bg-white/[0.03] rounded-3xl border border-white/10 p-6 md:p-8 hover:bg-white/[0.06] hover:border-primary/40 transition-all group overflow-hidden relative"
+                  className="w-full text-left bg-white/3 rounded-3xl border border-white/10 p-6 md:p-8 hover:bg-white/6 hover:border-primary/40 transition-all group overflow-hidden relative"
                 >
                   <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] group-hover:bg-primary/10 transition-colors" />
                   
@@ -143,7 +143,7 @@ export default function HistoryPage() {
                               initial={{ width: 0 }}
                               animate={{ width: `${progress}%` }}
                               transition={{ duration: 1, ease: "easeOut", delay: 0.2 + (index * 0.05) }}
-                              className={`h-full rounded-full ${isComplete ? "bg-emerald-500" : "bg-gradient-to-r from-primary to-accent"}`}
+                              className={`h-full rounded-full ${isComplete ? "bg-emerald-500" : "bg-linear-to-r from-primary to-accent"}`}
                             />
                           </div>
                         </div>

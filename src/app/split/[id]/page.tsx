@@ -215,7 +215,7 @@ export default function SplitPage({ params }: { params: Promise<{ id: string }> 
               <span className="font-mono text-primary">${assignedTotal.toFixed(2)} / ${receipt.total.toFixed(2)}</span>
             </div>
             <div className="w-full h-2 bg-surface-elevated rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-primary to-accent rounded-full transition-all duration-500"
+              <div className="h-full bg-linear-to-r from-primary to-accent rounded-full transition-all duration-500"
                 style={{ width: `${Math.min((assignedTotal / receipt.total) * 100, 100)}%` }} />
             </div>
           </div>

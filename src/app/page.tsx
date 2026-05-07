@@ -69,7 +69,7 @@ export default function Home() {
       <nav className="fixed top-0 inset-x-0 z-50 border-b border-white/5 bg-[#0A0A0A]/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 font-brand font-bold text-xl tracking-tight">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary to-accent flex items-center justify-center">
               <Split className="w-4 h-4 text-white" />
             </div>
             BlinkSplit
@@ -88,7 +88,7 @@ export default function Home() {
       {/* Hero Section */}
       <main className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 px-6">
         {/* Dynamic Background Decorations */}
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+        <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-primary/50 to-transparent" />
         <motion.div 
           animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
@@ -101,7 +101,7 @@ export default function Home() {
         />
 
         {/* CSS Grid Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] -z-10" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px] mask-[linear-gradient(180deg,white,rgba(255,255,255,0))] -z-10" />
 
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-8 z-10">
           
@@ -115,9 +115,9 @@ export default function Home() {
               <span>Powered by Solana Blinks</span>
             </div>
             
-            <h1 className="text-5xl lg:text-7xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/40 font-brand leading-[1.1]">
+            <h1 className="text-5xl lg:text-7xl font-bold tracking-tighter bg-clip-text text-transparent bg-linear-to-br from-white via-white/90 to-white/40 font-brand leading-[1.1]">
               Split bills.<br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">In a blink.</span>
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-accent">In a blink.</span>
             </h1>
             
             <p className="text-xl text-white/60 font-medium max-w-lg mx-auto lg:mx-0 leading-relaxed">
@@ -130,7 +130,7 @@ export default function Home() {
                 disabled={isScanning}
                 className="group relative w-full sm:w-auto px-8 py-4 bg-primary text-background font-bold text-lg rounded-full hover:bg-primary/90 transition-all shadow-[0_0_30px_rgba(6,182,212,0.3)] hover:shadow-[0_0_40px_rgba(6,182,212,0.5)] disabled:opacity-80 disabled:cursor-wait overflow-hidden"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                 {isScanning ? (
                   <span className="flex items-center justify-center gap-2">
                     <span className="w-5 h-5 border-2 border-background/30 border-t-background rounded-full animate-spin" />
@@ -155,10 +155,10 @@ export default function Home() {
             <motion.div 
               animate={{ y: [-10, 10, -10], rotateX: [2, -2, 2], rotateY: [-2, 2, -2] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="relative mx-auto w-full aspect-[3/4] bg-[#111]/80 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl p-8 flex flex-col items-center overflow-hidden transform-gpu"
+              className="relative mx-auto w-full aspect-3/4 bg-[#111]/80 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl p-8 flex flex-col items-center overflow-hidden transform-gpu"
             >
               {/* Top decorative elements */}
-              <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-primary via-accent to-primary" />
+              <div className="absolute top-0 inset-x-0 h-1 bg-linear-to-r from-primary via-accent to-primary" />
               <div className="w-16 h-1.5 bg-white/20 rounded-full mb-8" />
               
               {/* Receipt Content */}
@@ -285,10 +285,10 @@ export default function Home() {
             </div>
             <div className="relative aspect-square md:aspect-auto md:h-[600px] rounded-3xl bg-[#111] border border-white/10 overflow-hidden flex items-center justify-center">
               {/* Decorative Abstract Art */}
-              <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+              <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px]" />
               <motion.div animate={{ rotate: 360 }} transition={{ duration: 30, repeat: Infinity, ease: "linear" }} className="w-64 h-64 border border-primary/30 rounded-full border-dashed" />
               <motion.div animate={{ rotate: -360 }} transition={{ duration: 40, repeat: Infinity, ease: "linear" }} className="absolute w-80 h-80 border border-accent/30 rounded-full border-dashed" />
-              <div className="absolute w-32 h-32 bg-gradient-to-tr from-primary to-accent rounded-full blur-[40px] opacity-50" />
+              <div className="absolute w-32 h-32 bg-linear-to-tr from-primary to-accent rounded-full blur-2xl opacity-50" />
               <Split className="absolute w-16 h-16 text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]" />
             </div>
           </div>
