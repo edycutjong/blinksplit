@@ -118,7 +118,7 @@ export default function Home() {
           const splitRes = await fetch("/api/splits", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ receipt: receiptData }),
+            body: JSON.stringify({ receipt: receiptData.receipt }),
           });
 
           if (!splitRes.ok) throw new Error("Failed to create split session");
@@ -136,6 +136,25 @@ export default function Home() {
     } catch (error) {
       console.error("Error reading file:", error);
       setIsScanning(false);
+    }
+  };
+
+  const loadDemoReceipt = async () => {
+    setIsScanning(true);
+    try {
+      const splitRes = await fetch("/api/splits", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+
+      if (!splitRes.ok) throw new Error("Failed to create split session");
+      const splitSession = await splitRes.json();
+      router.push(`/split/${splitSession.id}`);
+    } catch (error) {
+      console.error(error);
+      setIsScanning(false);
+      alert("Failed to load demo receipt.");
     }
   };
 
@@ -221,6 +240,13 @@ export default function Home() {
                     Scan Receipt &rarr;
                   </span>
                 )}
+              </button>
+              <button
+                onClick={loadDemoReceipt}
+                disabled={isScanning}
+                className="group relative w-full sm:w-auto px-8 py-4 bg-white/5 text-white font-bold text-lg rounded-full border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all disabled:opacity-80 disabled:cursor-wait"
+              >
+                Try Demo Receipt
               </button>
             </div>
           </motion.div>
@@ -338,7 +364,7 @@ export default function Home() {
             </FeatureCard>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Features Section */}
       <section id="features" className="py-24 px-6 border-t border-white/5">
@@ -380,7 +406,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* CTA Section */}
       <motion.section 
@@ -400,13 +426,22 @@ export default function Home() {
           <p className="text-xl text-white/60 mb-10 max-w-2xl mx-auto">
             Scan your first receipt in seconds. No sign-ups. No apps. Just connect your Solana wallet and split.
           </p>
-          <button
-            onClick={triggerFileInput}
-            disabled={isScanning}
-            className="px-10 py-5 bg-white text-black font-bold text-xl rounded-full hover:bg-white/90 transition-all shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:scale-105 active:scale-95 disabled:opacity-80 disabled:cursor-wait"
-          >
-            {isScanning ? "Scanning Receipt..." : "Scan a Receipt Now"}
-          </button>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button
+              onClick={triggerFileInput}
+              disabled={isScanning}
+              className="px-10 py-5 bg-white text-black font-bold text-xl rounded-full hover:bg-white/90 transition-all shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:scale-105 active:scale-95 disabled:opacity-80 disabled:cursor-wait"
+            >
+              {isScanning ? "Scanning Receipt..." : "Scan a Receipt Now"}
+            </button>
+            <button
+              onClick={loadDemoReceipt}
+              disabled={isScanning}
+              className="px-10 py-5 bg-white/5 text-white font-bold text-xl rounded-full border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all hover:scale-105 active:scale-95 disabled:opacity-80 disabled:cursor-wait"
+            >
+              Try Demo Receipt
+            </button>
+          </div>
         </div>
       </motion.section>
 
