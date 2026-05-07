@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+  <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#06B6D4"/>
+    <stop offset="100%" stop-color="#A855F7"/>
+  </linearGradient>
+  <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#06B6D4"/>
+    <stop offset="100%" stop-color="#0E7490"/>
+  </linearGradient>
+  <filter id="glow">
+    <feGaussianBlur stdDeviation="10" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="soft-glow">
+    <feGaussianBlur stdDeviation="18" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <clipPath id="receipt-clip">
+    <path d="M140 80 L372 80 L372 400 L352 380 L332 400 L312 380 L292 400 L272 380 L252 400 L232 380 L212 400 L192 380 L172 400 L152 380 L140 400 Z"/>
+  </clipPath>
+</defs>
+
+<!-- Background -->
+<rect width="512" height="512" rx="96" fill="#020617"/>
+
+<!-- Subtle radial glow -->
+<circle cx="256" cy="240" r="180" fill="url(#g)" opacity="0.06" filter="url(#soft-glow)"/>
+
+<!-- Receipt shape (torn bottom edge) -->
+<g filter="url(#glow)">
+  <!-- Receipt body -->
+  <path d="M160 90 L352 90 L352 390 L336 374 L320 390 L304 374 L288 390 L272 374 L256 390 L240 374 L224 390 L208 374 L192 390 L176 374 L160 390 Z" 
+    fill="none" stroke="url(#g)" stroke-width="5" stroke-linejoin="round" opacity="0.9"/>
+
+  <!-- Receipt lines (parsed items) -->
+  <line x1="190" y1="140" x2="322" y2="140" stroke="url(#g)" stroke-width="3" stroke-linecap="round" opacity="0.3"/>
+  <line x1="190" y1="170" x2="300" y2="170" stroke="url(#g)" stroke-width="3" stroke-linecap="round" opacity="0.25"/>
+  <line x1="190" y1="200" x2="310" y2="200" stroke="url(#g)" stroke-width="3" stroke-linecap="round" opacity="0.2"/>
+
+  <!-- Divider line before total -->
+  <line x1="185" y1="235" x2="327" y2="235" stroke="url(#g)" stroke-width="2" stroke-linecap="round" opacity="0.4" stroke-dasharray="4 4"/>
+
+  <!-- Total line (bolder) -->
+  <line x1="190" y1="260" x2="322" y2="260" stroke="url(#g)" stroke-width="5" stroke-linecap="round" opacity="0.5"/>
+</g>
+
+<!-- Lightning bolt (Blink) - cutting through the receipt -->
+<g filter="url(#glow)">
+  <path d="M280 110 L240 230 L275 230 L235 340" 
+    stroke="#FBBF24" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Arrow tip -->
+  <path d="M235 340 L245 310 M235 340 L258 330" 
+    stroke="#FBBF24" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+
+<!-- Small sparkle dots around the bolt -->
+<circle cx="300" cy="150" r="4" fill="#FBBF24" opacity="0.7"/>
+<circle cx="220" cy="290" r="3" fill="#FBBF24" opacity="0.5"/>
+<circle cx="310" cy="260" r="3" fill="#06B6D4" opacity="0.6"/>
+<circle cx="195" cy="160" r="3" fill="#A855F7" opacity="0.5"/>
+
+<!-- Split arrows at bottom (payment splitting) -->
+<g filter="url(#glow)" opacity="0.7">
+  <path d="M256 410 L200 445" stroke="url(#g)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M256 410 L256 450" stroke="url(#g)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M256 410 L312 445" stroke="url(#g)" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="200" cy="445" r="8" fill="none" stroke="#06B6D4" stroke-width="3"/>
+  <circle cx="256" cy="450" r="8" fill="none" stroke="url(#g)" stroke-width="3"/>
+  <circle cx="312" cy="445" r="8" fill="none" stroke="#A855F7" stroke-width="3"/>
+</g>
+</svg>
