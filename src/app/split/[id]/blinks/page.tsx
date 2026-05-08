@@ -3,17 +3,36 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { Copy, Check } from "lucide-react";
+
+interface Payer {
+  personId: string;
+  paymentStatus: "paid" | "pending";
+  name: string;
+  wallet: string;
+  totalOwed: number;
+  itemsTotal: number;
+  taxShare: number;
+  tipShare: number;
+}
 
 export default function PaymentTracker({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
-  const [payers, setPayers] = useState<any[]>([]);
+  const [payers, setPayers] = useState<Payer[]>([]);
   const [loading, setLoading] = useState(true);
   const [copiedId, setCopiedId] = useState<string | null>(() => null);
+  const [copiedWallet, setCopiedWallet] = useState<string | null>(() => null);
 
   const handleCopy = (id: string) => {
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const copyWallet = (personId: string, wallet: string) => {
+    navigator.clipboard.writeText(wallet);
+    setCopiedWallet(personId);
+    setTimeout(() => setCopiedWallet(null), 1500);
   };
 
   useEffect(() => {
@@ -183,7 +202,18 @@ export default function PaymentTracker({ params }: { params: Promise<{ id: strin
                   
                   <div>
                     <h3 className="text-xl font-bold">{payer.name}</h3>
-                    <p className="text-sm text-text-muted">{payer.wallet}</p>
+                    <button
+                      onClick={() => copyWallet(payer.personId, payer.wallet)}
+                      className="flex items-center gap-1.5 text-sm text-text-muted font-mono tracking-wide hover:text-primary transition-colors group/wallet"
+                      title={payer.wallet}
+                    >
+                      <span>{payer.wallet.slice(0, 4)}...{payer.wallet.slice(-4)}</span>
+                      {copiedWallet === payer.personId ? (
+                        <Check className="w-3.5 h-3.5 text-success" />
+                      ) : (
+                        <Copy className="w-3.5 h-3.5 opacity-40 group-hover/wallet:opacity-100 transition-opacity" />
+                      )}
+                    </button>
                   </div>
 
                   <motion.div 

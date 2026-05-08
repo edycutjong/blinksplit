@@ -2,7 +2,8 @@
 
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, Copy, Check } from "lucide-react";
 
 interface ReceiptItem { id: number; name: string; price: number; }
 interface Person { id: string; name: string; wallet: string; color: string; }
@@ -27,6 +28,13 @@ export default function SplitPage({ params }: { params: Promise<{ id: string }> 
   const [newName, setNewName] = useState(() => "");
   const [newWallet, setNewWallet] = useState(() => "");
   const [showAdd, setShowAdd] = useState(() => false);
+  const [copiedWallet, setCopiedWallet] = useState<string | null>(() => null);
+
+  const copyWallet = (personId: string, wallet: string) => {
+    navigator.clipboard.writeText(wallet);
+    setCopiedWallet(personId);
+    setTimeout(() => setCopiedWallet(null), 1500);
+  };
 
   useEffect(() => {
     fetch(`/api/splits/${id}`)
@@ -36,7 +44,7 @@ export default function SplitPage({ params }: { params: Promise<{ id: string }> 
         const fetchedPeople = data.people || [];
         setPeople(fetchedPeople);
         
-        let initialAssignments = data.assignments || {};
+        const initialAssignments = data.assignments || {};
         if (Object.keys(initialAssignments).length === 0 && data.receipt?.items && fetchedPeople.length > 0) {
           const allPersonIds = fetchedPeople.map((p: Person) => p.id);
           data.receipt.items.forEach((item: ReceiptItem) => {
@@ -83,6 +91,20 @@ export default function SplitPage({ params }: { params: Promise<{ id: string }> 
     setNewName("");
     setNewWallet("");
     setShowAdd(false);
+  };
+
+  const removePerson = (personId: string) => {
+    if (people.length <= 2) return; // Minimum 2 people
+    setPeople((prev) => prev.filter((p) => p.id !== personId));
+    // Remove person from all assignments
+    setAssignments((prev) => {
+      const next = { ...prev };
+      Object.keys(next).forEach((key) => {
+        const itemId = parseInt(key);
+        next[itemId] = next[itemId].filter((id) => id !== personId);
+      });
+      return next;
+    });
   };
 
   const handleGenerate = async () => {
@@ -183,21 +205,51 @@ export default function SplitPage({ params }: { params: Promise<{ id: string }> 
           <div className="bg-surface rounded-2xl border border-border p-6 shadow-xl flex-1">
             <h3 className="text-lg font-bold mb-4">Payers</h3>
             <div className="space-y-3">
+              <AnimatePresence mode="popLayout">
               {people.map((p) => {
                 const total = getPersonTotal(p.id);
                 return (
-                  <div key={p.id} className="flex items-center gap-3 p-3 bg-surface-elevated rounded-xl border border-border">
-                    <div className={`w-10 h-10 rounded-full ${p.color} flex items-center justify-center text-white font-bold text-sm`}>
+                  <motion.div
+                    key={p.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9, x: -20 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex items-center gap-3 p-3 bg-surface-elevated rounded-xl border border-border group/payer relative"
+                  >
+                    <div className={`w-10 h-10 rounded-full ${p.color} flex items-center justify-center text-white font-bold text-sm shrink-0`}>
                       {p.name[0]}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="font-medium text-sm">{p.name}</div>
-                      <div className="text-xs text-text-muted truncate">{p.wallet}</div>
+                      <button
+                        onClick={() => copyWallet(p.id, p.wallet)}
+                        className="flex items-center gap-1 text-xs text-text-muted font-mono hover:text-primary transition-colors group/wallet"
+                        title={p.wallet}
+                      >
+                        <span>{p.wallet.slice(0, 4)}...{p.wallet.slice(-4)}</span>
+                        {copiedWallet === p.id ? (
+                          <Check className="w-3 h-3 text-success" />
+                        ) : (
+                          <Copy className="w-3 h-3 opacity-40 group-hover/wallet:opacity-100 transition-opacity" />
+                        )}
+                      </button>
                     </div>
                     <div className="font-mono font-bold text-primary">${total.toFixed(2)}</div>
-                  </div>
+                    {people.length > 2 && (
+                      <button
+                        onClick={() => removePerson(p.id)}
+                        className="ml-1 w-7 h-7 rounded-full flex items-center justify-center text-text-muted opacity-0 group-hover/payer:opacity-100 hover:bg-red-500/20 hover:text-red-400 transition-all shrink-0"
+                        title={`Remove ${p.name}`}
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </motion.div>
                 );
               })}
+              </AnimatePresence>
             </div>
 
             {showAdd ? (

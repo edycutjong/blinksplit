@@ -278,7 +278,7 @@ export function getDemoReceipt(): Receipt {
 }
 
 export function getDemoPeople(): Person[] {
-  const numPeople = Math.floor(Math.random() * 3) + 3; // 3 to 5 people
+  const numPeople = Math.floor(Math.random() * 5) + 2; // 2 to 6 people
   const shuffledPeople = [...ALL_PEOPLE].sort(() => 0.5 - Math.random());
   return shuffledPeople.slice(0, numPeople).map((p, idx) => ({ ...p, id: `p${idx + 1}` }));
 }
