@@ -32,8 +32,9 @@ const USDC_MINT = new PublicKey("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU");
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: Promise<{ paymentId: string }> }
+  props: { params: Promise<{ paymentId: string }> }
 ) {
+  const { params } = props;
   const { paymentId } = await params;
   const [splitId, personId] = paymentId.split("_");
 
@@ -79,8 +80,9 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ paymentId: string }> }
+  props: { params: Promise<{ paymentId: string }> }
 ) {
+  const { params } = props;
   const { paymentId } = await params;
   const [splitId, personId] = paymentId.split("_");
 

@@ -61,6 +61,7 @@ export default function PaymentTracker({ params }: { params: Promise<{ id: strin
     });
     
     return () => timers.forEach(clearTimeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payers.length]);
 
   if (loading) {

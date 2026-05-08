@@ -14,6 +14,14 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     "coverage/**"
   ]),
+  {
+    files: ["**/*.test.ts", "**/*.test.tsx", "vitest.setup.ts"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-require-imports": "off",
+      "react/display-name": "off"
+    }
+  }
 ]);
 
 export default eslintConfig;

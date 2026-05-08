@@ -6,8 +6,9 @@ import { generateBlinks } from "@/lib/store";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  props: { params: Promise<{ id: string }> }
 ) {
+  const { params } = props;
   const { id } = await params;
 
   // Build base URL from request

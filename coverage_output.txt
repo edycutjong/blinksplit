@@ -1,0 +1,271 @@
+
+> blinksplit@0.1.0 test:coverage
+> vitest run --coverage
+
+
+ RUN  v4.1.5 /Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs
+      Coverage enabled with v8
+
+stdout | src/lib/__tests__/blinks.test.ts > Blinks SDK > generateBlinkUrl > should generate a blink URL using encodeURL
+[Blinks SDK] Generating payment blink for 10.5 USDC to recipient_address
+
+stdout | src/lib/__tests__/blinks.test.ts > Blinks SDK > generateBlinkUrl > should fallback to string formatting if encodeURL fails
+[Blinks SDK] Generating payment blink for 20 USDC to test_recipient
+
+stderr | src/lib/__tests__/blinks.test.ts > Blinks SDK > generateBlinkUrl > should fallback to string formatting if encodeURL fails
+[Blinks SDK] URL encoding failed, falling back to basic string format.
+
+stdout | src/lib/__tests__/blinks.test.ts > Blinks SDK > generateBlinkUrl > should initialize connection only once
+[Blinks SDK] Generating payment blink for 10 USDC to recip
+
+stdout | src/lib/__tests__/blinks.test.ts > Blinks SDK > generateBlinkUrl > should initialize connection only once
+[Blinks SDK] Generating payment blink for 20 USDC to recip
+
+stdout | src/lib/__tests__/blinks.test.ts > Blinks SDK > simulateBlinkTransaction > should simulate a successful blink transaction
+[Blinks SDK] Creating transaction for payer: valid_payer, amount: 5
+
+stdout | src/lib/__tests__/blinks.test.ts > Blinks SDK > simulateBlinkTransaction > should handle uninitialized connection error
+[Blinks SDK] Creating transaction for payer: payer, amount: 10
+
+stderr | src/lib/__tests__/blinks.test.ts > Blinks SDK > simulateBlinkTransaction > should handle uninitialized connection error
+[Blinks SDK] Real transaction generation failed: Error: Connection not initialized
+    at BlinkSplitService.simulateBlinkTransaction (/Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/src/lib/blinks.ts:41:35)
+    at /Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/src/lib/__tests__/blinks.test.ts:112:37
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+
+stdout | src/lib/__tests__/blinks.test.ts > Blinks SDK > simulateBlinkTransaction > should handle transaction generation error (invalid pubkey)
+[Blinks SDK] Creating transaction for payer: invalid, amount: 10
+
+stderr | src/lib/__tests__/blinks.test.ts > Blinks SDK > simulateBlinkTransaction > should handle transaction generation error (invalid pubkey)
+[Blinks SDK] Real transaction generation failed: Error: Invalid pubkey
+    at new <anonymous> (/Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/src/lib/__tests__/blinks.test.ts:28:36)
+    at new Mock (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/spy/dist/index.js:309:27)
+    at BlinkSplitService.simulateBlinkTransaction (/Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/src/lib/blinks.ts:44:24)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at /Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/src/lib/__tests__/blinks.test.ts:121:23
+
+ ✓ src/lib/__tests__/blinks.test.ts (6 tests) 13ms
+stderr | src/lib/__tests__/store.test.ts > store > createSplit > throws error if insert fails
+Error creating split: Error: Insert failed
+    at /Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/src/lib/__tests__/store.test.ts:113:59
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64
+
+stderr | src/lib/__tests__/store.test.ts > store > updateAssignments > returns null if update fails
+Error updating assignments: Error: Update failed
+    at /Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/src/lib/__tests__/store.test.ts:145:48
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64
+
+stderr | src/lib/__tests__/store.test.ts > store > generateBlinks > returns null if update fails
+Error generating blinks: Error: Update fail
+    at /Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/src/lib/__tests__/store.test.ts:213:48
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64
+
+stderr | src/lib/__tests__/store.test.ts > store > markPaid > returns null if update fails
+Error marking paid: Error: fail
+    at /Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/src/lib/__tests__/store.test.ts:317:48
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64
+
+ ✓ src/lib/__tests__/store.test.ts (20 tests) 30ms
+stdout | src/lib/__tests__/receipt-parser.test.ts > Receipt Parser > should use fallback demo data when OPENAI_API_KEY is not set
+[Receipt Parser] No OPENAI_API_KEY found, using fallback demo data
+
+ ✓ src/lib/__tests__/supabase.test.ts (2 tests) 77ms
+stderr | src/lib/__tests__/receipt-parser.test.ts > Receipt Parser > should use fallback if API call fails
+[Receipt Parser] AI parsing failed: Error: OpenAI API error: 500
+    at Module.parseReceipt (/Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/src/lib/receipt-parser.ts:82:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at /Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/src/lib/__tests__/receipt-parser.test.ts:163:20
+
+stderr | src/lib/__tests__/receipt-parser.test.ts > Receipt Parser > should use fallback if empty response
+[Receipt Parser] AI parsing failed: Error: Empty response from OpenAI
+    at Module.parseReceipt (/Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/src/lib/receipt-parser.ts:89:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at /Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/src/lib/__tests__/receipt-parser.test.ts:178:20
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
+
+ ✓ src/lib/__tests__/receipt-parser.test.ts (8 tests) 10ms
+ ✓ src/app/not-found.test.tsx (1 test) 140ms
+stderr | src/app/split/[id]/blinks/page.test.tsx > PaymentTracker Page > renders loading state
+An update to PaymentTracker inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to PaymentTracker inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+stderr | src/app/page.test.tsx > Home Page > renders the landing page correctly
+React does not recognize the `whileInView` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `whileinview` instead. If you accidentally passed it from a parent component, remove it from the DOM element.
+
+ ✓ src/app/history/page.test.tsx (4 tests) 78ms
+ ✓ src/app/split/[id]/blinks/page.test.tsx (4 tests) 181ms
+stderr | src/app/page.test.tsx > Home Page > handles file upload and error
+Error processing receipt inside onloadend: Error: Failed to parse receipt
+    at FileReader.reader.onloadend (/Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/src/app/page.tsx:114:35)
+
+ ✓ src/app/split/[id]/page.test.tsx (6 tests) 298ms
+ ✓ src/app/page.test.tsx (5 tests) 427ms
+stderr | src/app/api/splits/[id]/route.test.ts > splits/[id] API > PUT > returns 500 on store error
+[API] Update split error: Error: fail
+    at /Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/src/app/api/splits/[id]/route.test.ts:83:54
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64
+
+ ✓ src/app/api/splits/[id]/route.test.ts (5 tests) 8ms
+stderr | src/app/api/actions/pay/[paymentId]/route.test.ts > Solana actions pay API > POST > returns fallback on error
+[Solana Actions] POST error: Error: fail
+    at /Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/src/app/api/actions/pay/[paymentId]/route.test.ts:170:55
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64
+
+ ✓ src/app/api/actions/pay/[paymentId]/route.test.ts (9 tests) 8ms
+stderr | src/app/api/splits/route.test.ts > splits API > POST > returns 500 if store throws error
+[API] Create split error: Error: DB error
+    at /Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/src/app/api/splits/route.test.ts:65:48
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64
+
+ ✓ src/app/api/splits/route.test.ts (4 tests) 7ms
+stderr | src/app/api/parse-receipt/route.test.ts > parse-receipt API > returns 500 on parser error
+[API] Parse receipt error: Error: Parse fail
+    at /Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/src/app/api/parse-receipt/route.test.ts:121:47
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64
+
+ ✓ src/app/api/parse-receipt/route.test.ts (6 tests) 10ms
+stderr | src/app/api/splits/[id]/pay/route.test.ts > pay API > returns 500 on store error
+[API] Pay error: Error: fail
+    at /Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/src/app/api/splits/[id]/pay/route.test.ts:53:43
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+    at file:///Users/edycu/Projects/Hackathon/Frontier/frontier-100xdevs/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64
+
+ ✓ src/app/api/splits/[id]/pay/route.test.ts (4 tests) 6ms
+ ✓ src/app/api/splits/[id]/generate-blinks/route.test.ts (2 tests) 4ms
+ ✓ src/app/api/health/route.test.ts (1 test) 2ms
+
+ Test Files  16 passed (16)
+      Tests  87 passed (87)
+   Start at  05:57:48
+   Duration  3.00s (transform 808ms, setup 1.89s, import 2.95s, tests 1.30s, environment 13.88s)
+
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   93.97 |     88.8 |    89.7 |   95.55 |                   
+ app               |   83.33 |    85.71 |   84.61 |   86.56 |                   
+  not-found.tsx    |     100 |      100 |     100 |     100 |                   
+  page.tsx         |   83.09 |    85.71 |   83.33 |   86.36 | ...37-138,155-157 
+ ...ay/[paymentId] |     100 |      100 |     100 |     100 |                   
+  route.ts         |     100 |      100 |     100 |     100 |                   
+ app/api/health    |     100 |      100 |     100 |     100 |                   
+  route.ts         |     100 |      100 |     100 |     100 |                   
+ .../parse-receipt |     100 |    83.33 |     100 |     100 |                   
+  route.ts         |     100 |    83.33 |     100 |     100 | 10,26             
+ app/api/splits    |     100 |      100 |     100 |     100 |                   
+  route.ts         |     100 |      100 |     100 |     100 |                   
+ ...pi/splits/[id] |     100 |      100 |     100 |     100 |                   
+  route.ts         |     100 |      100 |     100 |     100 |                   
+ ...enerate-blinks |     100 |      100 |     100 |     100 |                   
+  route.ts         |     100 |      100 |     100 |     100 |                   
+ ...plits/[id]/pay |     100 |      100 |     100 |     100 |                   
+  route.ts         |     100 |      100 |     100 |     100 |                   
+ app/history       |   96.29 |    74.07 |    92.3 |   95.65 |                   
+  page.tsx         |   96.29 |    74.07 |    92.3 |   95.65 | 93                
+ app/split/[id]    |   87.17 |    78.12 |   82.97 |   89.36 |                   
+  page.tsx         |   87.17 |    78.12 |   82.97 |   89.36 | ...40,182,260-264 
+ ...it/[id]/blinks |   92.45 |    93.18 |    87.5 |   97.61 |                   
+  page.tsx         |   92.45 |    93.18 |    87.5 |   97.61 | 265               
+ lib               |     100 |    98.64 |     100 |     100 |                   
+  blinks.ts        |     100 |      100 |     100 |     100 |                   
+  ...ipt-parser.ts |     100 |      100 |     100 |     100 |                   
+  store.ts         |     100 |    97.05 |     100 |     100 | 137               
+  supabase.ts      |     100 |      100 |     100 |     100 |                   
+-------------------|---------|----------|---------|---------|-------------------

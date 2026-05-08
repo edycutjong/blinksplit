@@ -120,6 +120,7 @@ export default function SplitPage({ params }: { params: Promise<{ id: string }> 
       await fetch(`/api/splits/${id}/generate-blinks`, { method: "POST" });
       router.push(`/split/${id}/blinks`);
     } catch (_err) {
+      console.error(_err);
       setIsGenerating(false);
     }
   };

@@ -7,9 +7,9 @@ import { markPaid } from "@/lib/store";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  props: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params;
+  const { id } = await props.params;
 
   try {
     const body = await request.json();
@@ -21,16 +21,12 @@ export async function POST(
 
     const session = await markPaid(id, personId);
 
-    if (!session) {
-      return NextResponse.json({ error: "Split not found" }, { status: 404 });
-    }
+    if (!session) return NextResponse.json({ error: "Split not found" }, { status: 404 });
 
     return NextResponse.json(session);
   } catch (err) {
     console.error("[API] Pay error:", err);
-    return NextResponse.json(
-      { error: "Failed to process payment" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to process payment" }, { status: 500 });
+
   }
 }

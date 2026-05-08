@@ -2,9 +2,9 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { blinkService } from "@/lib/blinks";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, useMotionTemplate } from "framer-motion";
-import { Receipt, Zap, Link as LinkIcon, Split, Camera, Bot, Send, Shield, Smartphone, Coins } from "lucide-react";
+import { Receipt, Zap, Camera, Bot, Send, Shield, Smartphone, Coins } from "lucide-react";
+import Image from "next/image";
 
 function FeatureCard({ children, className = "", highlight = "rgba(6,182,212,0.15)" }: { children: React.ReactNode, className?: string, highlight?: string }) {
   const mouseX = useMotionValue(0);
@@ -165,7 +165,7 @@ export default function Home() {
       <nav className="fixed top-0 inset-x-0 z-50 border-b border-white/5 bg-[#0A0A0A]/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 font-brand font-bold text-xl tracking-tight">
-            <img src="/logo.svg" alt="BlinkSplit Logo" className="w-8 h-8 drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]" />
+            <Image src="/logo.svg" alt="BlinkSplit Logo" width={32} height={32} className="w-8 h-8 drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]" />
             BlinkSplit
           </div>
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/60">
@@ -402,7 +402,7 @@ export default function Home() {
               <motion.div animate={{ rotate: 360 }} transition={{ duration: 30, repeat: Infinity, ease: "linear" }} className="w-64 h-64 border border-primary/30 rounded-full border-dashed" />
               <motion.div animate={{ rotate: -360 }} transition={{ duration: 40, repeat: Infinity, ease: "linear" }} className="absolute w-80 h-80 border border-accent/30 rounded-full border-dashed" />
               <div className="absolute w-32 h-32 bg-linear-to-tr from-primary to-accent rounded-full blur-2xl opacity-50" />
-              <img src="/logo.svg" alt="BlinkSplit Logo" className="absolute w-20 h-20 drop-shadow-[0_0_20px_rgba(6,182,212,0.6)]" />
+              <Image src="/logo.svg" alt="BlinkSplit Logo" width={80} height={80} className="absolute w-20 h-20 drop-shadow-[0_0_20px_rgba(6,182,212,0.6)]" />
             </div>
           </div>
         </div>
@@ -449,7 +449,7 @@ export default function Home() {
       <footer className="border-t border-white/10 py-12 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2 font-brand font-bold text-lg">
-            <img src="/logo.svg" alt="BlinkSplit Logo" className="w-6 h-6" />
+            <Image src="/logo.svg" alt="BlinkSplit Logo" width={24} height={24} className="w-6 h-6" />
             BlinkSplit
           </div>
           <div className="text-white/40 text-sm">

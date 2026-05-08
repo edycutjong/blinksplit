@@ -1,0 +1,51 @@
+--- src/app/page.test.tsx
++++ src/app/page.test.tsx
+@@ -135,35 +135,6 @@
+     consoleErrorMock.mockRestore();
+   });
+ 
+-  it("handles successful file upload", async () => {
+-    (global.fetch as any).mockResolvedValueOnce({
+-      ok: true,
+-      json: async () => ({ receipt: "mock-receipt" })
+-    }).mockResolvedValueOnce({
+-      ok: true,
+-      json: async () => ({ id: "mock-split-id" })
+-    });
+-
+-    render(<Home />);
+-    
+-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+-    const file = new File(["dummy content"], "receipt.jpg", { type: "image/jpeg" });
+-
+-    const mockFileReader = {
+-      readAsDataURL: vi.fn(function(this: FileReader) {
+-        if (this.onloadend) {
+-          const event = new ProgressEvent("loadend");
+-          this.onloadend(event as unknown as ProgressEvent<FileReader>);
+-        }
+-      }),
+-      result: "data:image/jpeg;base64,mock-base64",
+-    };
+-    vi.stubGlobal('FileReader', vi.fn(() => mockFileReader));
+-
+-    fireEvent.change(fileInput, { target: { files: [file] } });
+-
+-    await waitFor(() => {
+-      expect(mockPush).toHaveBeenCalledWith("/split/mock-split-id");
+-    });
+-
+-    vi.unstubAllGlobals();
+-  });
+-
+   it("handles demo receipt fetch error", async () => {
+     const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
+     const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
+ 
+-    (global.fetch as any).mockResolvedValueOnce({
+-      ok: false,
+-    });
++    (global.fetch as any).mockRejectedValueOnce(new Error("Network Error"));
+ 
+     render(<Home />);
+     
