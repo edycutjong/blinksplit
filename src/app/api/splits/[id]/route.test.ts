@@ -80,6 +80,7 @@ describe("splits/[id] API", () => {
     });
 
     it("returns 500 on store error", async () => {
+      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
       vi.mocked(updateAssignments).mockRejectedValue(new Error("fail"));
       
       const req = createMockRequest({});
@@ -88,6 +89,7 @@ describe("splits/[id] API", () => {
 
       expect(res.status).toBe(500);
       expect(data.error).toBe("Failed to update split");
+      consoleSpy.mockRestore();
     });
   });
 });

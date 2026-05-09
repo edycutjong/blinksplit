@@ -50,6 +50,7 @@ describe("pay API", () => {
   });
 
   it("returns 500 on store error", async () => {
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     vi.mocked(markPaid).mockRejectedValue(new Error("fail"));
 
     const req = createMockRequest({ personId: "p1" });
@@ -58,6 +59,7 @@ describe("pay API", () => {
 
     expect(res.status).toBe(500);
     expect(data.error).toBe("Failed to process payment");
+    consoleSpy.mockRestore();
   });
 
   it("marks as paid and returns session", async () => {

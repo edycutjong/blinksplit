@@ -149,11 +149,13 @@ describe("parse-receipt API", () => {
   });
 
   it("returns 500 on parser error", async () => {
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     vi.mocked(parseReceipt).mockRejectedValue(new Error("Parse fail"));
 
     const req = createMockRequest({ "content-type": "text/plain" });
 
     const res = await POST(req);
     expect(res.status).toBe(500);
+    consoleSpy.mockRestore();
   });
 });

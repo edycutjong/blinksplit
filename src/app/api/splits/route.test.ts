@@ -62,6 +62,7 @@ describe("splits API", () => {
     });
 
     it("returns 500 if store throws error", async () => {
+      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
       vi.mocked(createSplit).mockRejectedValue(new Error("DB error"));
 
       const req = createMockRequest({});
@@ -70,6 +71,7 @@ describe("splits API", () => {
 
       expect(res.status).toBe(500);
       expect(data.error).toBe("Failed to create split");
+      consoleSpy.mockRestore();
     });
   });
 

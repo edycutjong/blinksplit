@@ -162,6 +162,7 @@ describe("Solana actions pay API", () => {
     });
 
     it("returns fallback on error", async () => {
+      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
       vi.mocked(getSplit).mockResolvedValue({
         receipt: { restaurant: "Place" },
         blinks: [{ personId: "p1", name: "Alice", totalOwed: 10, items: [] }],
@@ -175,6 +176,7 @@ describe("Solana actions pay API", () => {
 
       expect(res.status).toBe(200); // the fallback returns 200
       expect(data.transaction).toBe("base64_demo_tx");
+      consoleSpy.mockRestore();
     });
   });
 });
