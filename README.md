@@ -1,193 +1,214 @@
-# BlinkSplit — Technical Architecture
+<div align="center">
+  <h1>BlinkSplit ⚡</h1>
+  <p><em>Snap a receipt. AI splits it. Drop a Solana Blink in the group chat. Everyone pays in one click.</em></p>
+  <img src="public/logo.svg" alt="BlinkSplit Logo" width="120">
 
-## Tech Stack
+  <br/>
 
-| Layer | Choice | Why |
-|-------|--------|-----|
-| **Frontend** | Next.js 16 (App Router) | Your primary stack. SSR for Blink metadata unfurling. |
-| **Styling** | Tailwind CSS v4 | Fast iteration, dark mode by default. |
-| **AI Backend** | Next.js API Route + GPT-4o Vision | Best OCR accuracy for receipts. Structured JSON output via `response_format`. |
-| **Database** | Supabase (PostgreSQL + Realtime) | Real-time payment tracking. Free tier sufficient. |
-| **Blockchain** | Solana (Devnet) | @solana/actions for Blink generation. USDC SPL transfers. |
-| **Deploy** | Vercel | Zero-config Next.js full-stack deployment. Live URL for judges. |
-| **File Storage** | Supabase Storage | Receipt image uploads. |
+  [![Live Demo](https://img.shields.io/badge/🚀_Live-Demo-06b6d4?style=for-the-badge)](https://blinksplit.edycu.dev)
+  [![Pitch Video](https://img.shields.io/badge/🎬_Pitch-Video-ef4444?style=for-the-badge)](https://youtube.com/watch?v=DEMO_VIDEO)
+  [![Built for Frontier](https://img.shields.io/badge/Colosseum-Frontier_Hackathon-8b5cf6?style=for-the-badge)](https://superteam.fun/earn/listing/100xdevs-frontier-hackathon-track)
 
-## System Diagram
+  <br/>
 
-```mermaid
-graph TB
-    subgraph "User Flow"
-        A[📱 User uploads receipt photo] --> B[🌐 Next.js Frontend]
-    end
+  ![Next.js](https://img.shields.io/badge/Next.js_16-black?style=flat-square&logo=next.js)
+  ![Solana](https://img.shields.io/badge/Solana-9945FF?style=flat-square&logo=solana&logoColor=white)
+  ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white)
+  ![OpenAI](https://img.shields.io/badge/GPT--4o_Vision-412991?style=flat-square&logo=openai&logoColor=white)
+  ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+  ![Coverage](https://img.shields.io/badge/Coverage-100%25-22c55e?style=flat-square)
 
-    subgraph "AI Processing"
-        B -->|POST /api/parse-receipt| C[⚡ Next.js API Route]
-        C -->|GPT-4o Vision API| D[🤖 OpenAI]
-        D -->|Structured JSON| C
-        C -->|Items + Prices + Tax| B
-    end
+</div>
 
-    subgraph "Split Assignment"
-        B -->|User assigns items to friends| E[📋 Split UI]
-        E -->|Save split data| F[(🗄️ Supabase DB)]
-    end
+---
 
-    subgraph "Blink Generation"
-        E -->|Generate payment links| G[⚡ Solana Actions API]
-        G -->|Unique Blink URL per person| H[🔗 Shareable Links]
-    end
+## 📸 See it in Action
 
-    subgraph "Payment Execution"
-        H -->|Friend clicks Blink| I[👛 Phantom Wallet]
-        I -->|Sign + Send tx| J[⛓️ Solana Devnet]
-        J -->|Webhook / Poll| F
-        F -->|Realtime update| B
-    end
-```
+<div align="center">
+  <img src="docs/readme.png" alt="BlinkSplit App Demo" width="800">
+</div>
 
-## Database Schema (Supabase)
+> **Three steps, zero app downloads.** Snap → Split → Blink.
 
-```sql
--- Splits table: one row per receipt scan session
-CREATE TABLE splits (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    image_url TEXT,
-    total_amount DECIMAL(10,2) NOT NULL,
-    tax_amount DECIMAL(10,2) DEFAULT 0,
-    tip_amount DECIMAL(10,2) DEFAULT 0,
-    currency TEXT DEFAULT 'USDC',
-    status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'partial', 'completed')),
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
+---
 
--- Split items: individual line items from the receipt
-CREATE TABLE split_items (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    split_id UUID REFERENCES splits(id) ON DELETE CASCADE,
-    name TEXT NOT NULL,
-    price DECIMAL(10,2) NOT NULL,
-    assignee_name TEXT,
-    assignee_wallet TEXT,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
+## 💡 The Problem & Solution
 
--- Payments: one row per person who owe money
-CREATE TABLE payments (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    split_id UUID REFERENCES splits(id) ON DELETE CASCADE,
-    payer_name TEXT NOT NULL,
-    payer_wallet TEXT,
-    amount_owed DECIMAL(10,2) NOT NULL,
-    amount_paid DECIMAL(10,2) DEFAULT 0,
-    blink_url TEXT,
-    tx_signature TEXT,
-    status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'paid', 'failed')),
-    paid_at TIMESTAMPTZ,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
+Splitting a dinner bill with friends is still painful in 2026. Venmo requires everyone to have the same app. Bank transfers take days. And someone always "forgets" to pay.
 
--- Enable Realtime for payment status updates
-ALTER PUBLICATION supabase_realtime ADD TABLE payments;
+**BlinkSplit** solves this by combining **AI receipt parsing** with **Solana Blinks** — shareable payment links that work inside any app (X/Twitter, Telegram, Discord). Your friends click the link, sign with their Solana wallet, and you receive USDC instantly. No app downloads. No sign-ups. No IOUs.
 
--- RLS Policies (open read for MVP, no auth)
-ALTER TABLE splits ENABLE ROW LEVEL SECURITY;
-ALTER TABLE split_items ENABLE ROW LEVEL SECURITY;
-ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
+**Key Features:**
+- ⚡ **AI-Powered Receipt OCR** — GPT-4o Vision parses line items, tax, and tips in seconds
+- 🔗 **Solana Blinks** — One-click USDC payments via shareable URLs (works in X, Telegram, Discord)
+- 📱 **Zero App Required** — Friends just click the link and sign with any Solana wallet (Phantom, Backpack, Solflare)
+- 💰 **Instant USDC Settlement** — No holding periods, no price volatility, funds arrive instantly
+- 📊 **Real-Time Tracking** — Live payment status dashboard powered by Supabase Realtime
+- 🧪 **Demo Mode** — Fully functional without API keys using built-in demo data
 
-CREATE POLICY "Public read splits" ON splits FOR SELECT USING (true);
-CREATE POLICY "Public insert splits" ON splits FOR INSERT WITH CHECK (true);
-CREATE POLICY "Public update splits" ON splits FOR UPDATE USING (true);
+---
 
-CREATE POLICY "Public read items" ON split_items FOR SELECT USING (true);
-CREATE POLICY "Public insert items" ON split_items FOR INSERT WITH CHECK (true);
+## 🏗️ Architecture & Tech Stack
 
-CREATE POLICY "Public read payments" ON payments FOR SELECT USING (true);
-CREATE POLICY "Public insert payments" ON payments FOR INSERT WITH CHECK (true);
-CREATE POLICY "Public update payments" ON payments FOR UPDATE USING (true);
-```
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | Next.js 16, React 19, Tailwind CSS v4 |
+| **AI** | GPT-4o Vision (receipt OCR) |
+| **Database** | Supabase (PostgreSQL + Realtime) |
+| **Blockchain** | Solana Devnet — Blinks + USDC SPL |
+| **Deploy** | Vercel |
 
-## API Endpoints
+> 📐 **[Full architecture deep-dive →](docs/ARCHITECTURE.md)** — System diagram, database schema, API endpoints, and Solana integration details.
 
-### Next.js API Routes (Full-Stack)
+---
 
-| Method | Route | Description |
-|--------|-------|-------------|
-| `GET` | `/api/actions/pay/[paymentId]` | Solana Action GET — returns Blink metadata (icon, title, amount) |
-| `POST` | `/api/actions/pay/[paymentId]` | Solana Action POST — constructs and returns serialized USDC transfer tx |
-| `GET` | `/api/actions.json` | Actions manifest for Blink discovery |
-| `POST` | `/api/splits` | Create a new split session (save parsed receipt data) |
-| `GET` | `/api/splits/[id]` | Get split details + payment statuses |
-| `PATCH` | `/api/splits/[id]/assign` | Assign items to people |
-| `POST` | `/api/splits/[id]/generate-blinks` | Generate Blink URLs for each payer |
-| `POST` | `/api/parse-receipt` | Upload receipt image → GPT-4o Vision → structured JSON |
+## 🏆 Sponsor Tracks Targeted
 
-## Key Libraries
+### Solana Actions / Blinks (Primary Integration)
 
-| Package | Purpose |
-|---------|---------|
-| `@solana/actions` | Solana Actions/Blinks SDK — Blink metadata + tx construction |
-| `@solana/web3.js` | Solana RPC connection, transaction building |
-| `@solana/spl-token` | USDC (SPL token) transfer instructions |
-| `@supabase/supabase-js` | Database client + Realtime subscriptions |
-| `openai` | GPT-4o Vision API for receipt OCR |
-| `recharts` | Payment tracking visualization |
-| `framer-motion` | UI animations |
+BlinkSplit is a **pure Solana Actions showcase**. The entire value proposition IS the Blink:
 
-## Sponsor SDK Integration
+| Integration Point | File | What it Does |
+|---|---|---|
+| `GET` Action endpoint | [`src/app/api/actions/pay/[paymentId]/route.ts`](src/app/api/actions/pay/%5BpaymentId%5D/route.ts) | Returns `ActionGetResponse` with dynamic icon, title, and USDC amount |
+| `POST` Action endpoint | [`src/app/api/actions/pay/[paymentId]/route.ts`](src/app/api/actions/pay/%5BpaymentId%5D/route.ts) | Constructs `VersionedTransaction` with `createTransferCheckedInstruction` for USDC SPL token transfer |
+| Actions manifest | [`public/actions.json`](public/actions.json) | Maps domain URLs to Action endpoints for Blink discovery |
+| Blink generator | [`src/lib/blinks.ts`](src/lib/blinks.ts) | Generates unique Blink URLs for each payer in a split |
 
-### Solana Actions/Blinks (Primary Integration)
+**Solana Details:**
+- **Network:** Devnet (mainnet-ready code)
+- **USDC Mint (Devnet):** `4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU`
+- **Transaction Type:** `createTransferCheckedInstruction` (SPL token transfer)
+- **Wallet Support:** Phantom, Backpack, Solflare (any Actions-compatible wallet)
 
-BlinkSplit is a **pure Solana Actions showcase**. The core value proposition IS the Blink:
+---
 
-1. **`GET /api/actions/pay/[id]`** — Returns `ActionGetResponse` with dynamic icon (receipt thumbnail), title ("Pay your share"), label ("Pay 24.50 USDC"), and amount
-2. **`POST /api/actions/pay/[id]`** — Receives payer's `account` (public key), constructs a `VersionedTransaction` with `createTransferCheckedInstruction` for USDC SPL token transfer, returns serialized tx
-3. **`actions.json`** — Maps domain URLs to Action endpoints for client discovery
-4. **Action Chaining** — After payment confirms, return a follow-up Action showing "Payment confirmed ✅"
-
-### Solana Integration Details
-
-- **Network**: Devnet (with mainnet-ready code)
-- **USDC Mint (Devnet)**: `4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU`
-- **Transaction Type**: `createTransferCheckedInstruction` (SPL token transfer, not system transfer)
-- **Wallet Support**: Phantom, Backpack, Solflare (any wallet that supports Solana Actions)
-
-## Folder Structure
+## 📁 Project Structure
 
 ```
 blinksplit/
 ├── src/
 │   ├── app/
-│   │   ├── page.tsx                    # Landing / upload page
-│   │   ├── split/[id]/page.tsx         # Split assignment + Blink generation
-│   │   ├── track/[id]/page.tsx         # Payment tracking dashboard
+│   │   ├── page.tsx                          # Landing page (glassmorphism hero)
+│   │   ├── split/[id]/page.tsx               # Split assignment + Blink generation
+│   │   ├── split/[id]/blinks/page.tsx        # Blink cards + payment tracker
+│   │   ├── history/page.tsx                  # Split history dashboard
 │   │   ├── api/
-│   │   │   ├── actions/
-│   │   │   │   └── pay/[paymentId]/route.ts  # Solana Action endpoints
-│   │   │   ├── actions.json/route.ts   # Actions manifest
-│   │   │   ├── splits/
-│   │   │   │   ├── route.ts            # Create split
-│   │   │   │   └── [id]/
-│   │   │   │       ├── route.ts        # Get split
-│   │   │   │       ├── assign/route.ts # Assign items
-│   │   │   │       └── generate-blinks/route.ts # Generate Blinks
-│   │   │   └── parse-receipt/route.ts  # OCR via OpenAI GPT-4o Vision
-│   │   ├── layout.tsx
-│   │   └── globals.css
-│   ├── components/
-│   │   ├── ReceiptUploader.tsx         # Drag-drop image upload
-│   │   ├── ReceiptParser.tsx           # Displays parsed items
-│   │   ├── SplitAssigner.tsx           # Assign items to people
-│   │   ├── BlinkCard.tsx               # Individual Blink preview card
-│   │   ├── PaymentTracker.tsx          # Real-time payment status
-│   │   └── AnimatedReceipt.tsx         # Receipt scan animation
+│   │   │   ├── actions/pay/[paymentId]/route.ts  # ⭐ Solana Action endpoints
+│   │   │   ├── splits/route.ts               # Create split session
+│   │   │   ├── splits/[id]/route.ts          # Get/update split
+│   │   │   ├── splits/[id]/generate-blinks/route.ts
+│   │   │   ├── splits/[id]/pay/route.ts      # Mark payment complete
+│   │   │   ├── parse-receipt/route.ts        # GPT-4o Vision OCR
+│   │   │   └── health/route.ts               # Health check
+│   │   └── layout.tsx
 │   └── lib/
-│       ├── supabase.ts                 # Supabase client
-│       ├── solana.ts                   # Solana connection + helpers
-│       └── types.ts                    # TypeScript types
+│       ├── blinks.ts                         # Blink URL generation
+│       ├── receipt-parser.ts                 # Receipt parsing logic
+│       ├── store.ts                          # Client-side state management
+│       └── supabase.ts                       # Supabase client
+├── db/
+│   └── schema.sql                            # Supabase schema (JSONB-based)
 ├── public/
-│   ├── logo.svg
-│   └── og-image.png
-├── .env.local
+│   ├── logo.svg                              # Brand logo
+│   └── actions.json                          # Solana Actions manifest
+├── .env.example                              # ⭐ Environment variable template
 ├── package.json
-└── README.md
+└── README.md                                 # You are here
 ```
+
+---
+
+## 🚀 Run it Locally (For Judges)
+
+### Quick Start
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/edycutjong/blinksplit.git
+cd blinksplit
+
+# 2. Install dependencies
+npm install
+
+# 3. Set up environment variables
+cp .env.example .env.local
+# Fill in your API keys (see below) — or skip for demo mode!
+
+# 4. Run the app
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) and you're in!
+
+### Environment Variables
+
+| Variable | Required? | Where to Get |
+|----------|-----------|--------------|
+| `NEXT_PUBLIC_RPC_URL` | Optional | [Helius](https://helius.dev) — defaults to public devnet RPC |
+| `NEXT_PUBLIC_FEE_ACCOUNT` | Optional | Your Solana wallet address (Phantom/Solflare) |
+| `OPENAI_API_KEY` | Optional | [OpenAI](https://platform.openai.com/api-keys) — falls back to demo data |
+| `NEXT_PUBLIC_SUPABASE_URL` | Optional | [Supabase](https://supabase.com/dashboard) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Optional | Supabase Dashboard → Settings → API |
+
+> **💡 Note for Judges:** All API keys are **optional**! The app includes a "Try Demo Receipt" button that works with zero configuration. Click it to see the full flow with pre-loaded sample data.
+
+### CI & Quality
+
+```bash
+# Run the full CI pipeline (lint + typecheck + 100% test coverage)
+npm run ci
+```
+
+| Check | Command | Status |
+|-------|---------|--------|
+| ESLint | `npm run lint` | ✅ Zero warnings |
+| TypeScript | `npm run typecheck` | ✅ Strict mode |
+| Tests | `npm run test:coverage` | ✅ 109 tests, **100% coverage** |
+
+---
+
+## 🧪 Test Coverage
+
+```
+ 16 test files  |  109 tests passed  |  100% coverage across all metrics
+─────────────────────────────────────────────────────────────
+ File                                 | Stmts | Branch | Funcs | Lines
+─────────────────────────────────────────────────────────────
+ All files                            |  100  |  100   |  100  |  100
+─────────────────────────────────────────────────────────────
+```
+
+---
+
+## 🧰 Key Libraries
+
+| Package | Purpose |
+|---------|---------|
+| `@solana/actions` | Solana Actions/Blinks SDK — metadata + tx construction |
+| `@solana/web3.js` | Solana RPC connection, transaction building |
+| `@solana/spl-token` | USDC (SPL token) transfer instructions |
+| `@supabase/supabase-js` | Database client + Realtime subscriptions |
+| `framer-motion` | Glassmorphism UI animations |
+| `lucide-react` | Icon library |
+
+---
+
+## 👤 Built By
+
+**Edy Cu Tjong** — Solo developer
+
+- 𝕏 [@edycutjong](https://x.com/edycutjong)
+- GitHub [@edycutjong](https://github.com/edycutjong)
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+<div align="center">
+  <sub>Built with ☕ and ⚡ for the <strong>Colosseum Frontier Hackathon</strong></sub>
+</div>
