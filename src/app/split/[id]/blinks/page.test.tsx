@@ -72,7 +72,9 @@ describe("PaymentTracker Page", () => {
     });
     
     // Clean up
-    resolveFetch({ ok: true, json: async () => ({ blinks: [] }) });
+    await act(async () => {
+      resolveFetch({ ok: true, json: async () => ({ blinks: [] }) });
+    });
   });
 
   it("renders payers and handles copy wallet/blink", async () => {
@@ -208,5 +210,40 @@ describe("PaymentTracker Page", () => {
 
     // Alice should now be paid
     expect(screen.queryByText("Pending")).not.toBeInTheDocument();
+  });
+
+  it("does not simulate if all already paid", async () => {
+    vi.useFakeTimers();
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        blinks: [
+          { blinkUrl: "https://example.com/1", amount: 15, personId: "p1", paymentStatus: "paid", name: "Alice", actionType: "payment", wallet: "wallet11111", totalOwed: 15, itemsTotal: 10, taxShare: 2, tipShare: 3 },
+          { blinkUrl: "https://example.com/2", amount: 10, personId: "p2", paymentStatus: "paid", name: "Bob", actionType: "payment", wallet: "wallet22222", totalOwed: 10, itemsTotal: 5, taxShare: 2, tipShare: 3 },
+        ],
+      }),
+    });
+
+    await act(async () => {
+      render(
+        <Suspense fallback={<div className="suspense-fallback" />}>
+          <PaymentTracker params={paramsPromise} />
+        </Suspense>
+      );
+    });
+
+    await act(async () => {
+      await new Promise(process.nextTick);
+      vi.advanceTimersByTime(100);
+    });
+
+    expect(screen.getByText("Alice")).toBeInTheDocument();
+
+    expect(screen.queryByText("Pending")).not.toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(10000);
+    });
+    vi.useRealTimers();
   });
 });

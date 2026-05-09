@@ -42,6 +42,7 @@ describe("Home Page", () => {
   it("handles file upload and error", async () => {
     // Mock window.alert
     const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
     
     (global.fetch as any).mockResolvedValueOnce({
       ok: false,
@@ -62,6 +63,7 @@ describe("Home Page", () => {
     });
     
     alertMock.mockRestore();
+    consoleErrorMock.mockRestore();
   });
 
   it("handles successful file upload and redirection", async () => {
@@ -105,7 +107,7 @@ describe("Home Page", () => {
   it("handles interaction on FeatureCard and TiltCard (mouse move)", () => {
     render(<Home />);
     
-    const scanCard = screen.getByText("AI Receipt Scanning").closest('.group');
+    const scanCard = screen.getByText("2. AI Parsing").closest('.group');
     expect(scanCard).toBeTruthy();
     if (scanCard) {
       fireEvent.mouseMove(scanCard, { clientX: 10, clientY: 10 });
@@ -139,25 +141,26 @@ describe("Home Page", () => {
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     const file = new File(["dummy content"], "receipt.jpg", { type: "image/jpeg" });
 
-    // Mock FileReader to throw an error or trigger onerror
-    const mockFileReader = {
-      readAsDataURL: vi.fn(function(this: FileReader) {
-        // @ts-expect-error: ProgressEvent doesn't strictly match FileReader type in vitest mock
-        if (this.onerror) this.onerror(new ProgressEvent("error"));
-      }),
-      result: "mock-result",
-    };
-    vi.stubGlobal('FileReader', vi.fn(() => mockFileReader));
-
-    fireEvent.change(fileInput, { target: { files: [file] } });
-
-    await waitFor(() => {
-      expect(consoleErrorMock).toHaveBeenCalled();
+    // Mock FileReader to throw an error
+    vi.stubGlobal('FileReader', class {
+      onloadend: any;
+      result = "mock-result";
+      readAsDataURL() {
+        throw new Error("FileReader mock error");
+      }
     });
 
-    vi.unstubAllGlobals();
-    alertMock.mockRestore();
-    consoleErrorMock.mockRestore();
+    try {
+      fireEvent.change(fileInput, { target: { files: [file] } });
+
+      await waitFor(() => {
+        expect(consoleErrorMock).toHaveBeenCalled();
+      });
+    } finally {
+      vi.unstubAllGlobals();
+      alertMock.mockRestore();
+      consoleErrorMock.mockRestore();
+    }
   });
 
   it("handles demo receipt fetch error", async () => {
@@ -177,5 +180,61 @@ describe("Home Page", () => {
 
     alertMock.mockRestore();
     consoleErrorMock.mockRestore();
+  });
+
+  it("handles demo receipt fetch failure (not ok)", async () => {
+    const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: false,
+    });
+
+    render(<Home />);
+    
+    const demoButton = screen.getAllByText(/Try Demo Receipt/i)[0];
+    fireEvent.click(demoButton);
+
+    await waitFor(() => {
+      expect(alertMock).toHaveBeenCalledWith("Failed to load demo receipt.");
+    });
+
+    alertMock.mockRestore();
+    consoleErrorMock.mockRestore();
+  });
+
+  it("returns early if no file is selected", () => {
+    render(<Home />);
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(fileInput, { target: { files: [] } });
+    expect(fileInput).toBeInTheDocument(); // Just ensuring no crash
+  });
+
+  it("handles split session creation error after successful parse", async () => {
+    const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    
+    (global.fetch as any)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ receipt: { items: [] } }), // parseRes
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({ error: "Split error" }), // splitRes
+      });
+
+    render(<Home />);
+    
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const file = new File(["dummy content"], "receipt.jpg", { type: "image/jpeg" });
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(consoleErrorMock).toHaveBeenCalled();
+    });
+
+    consoleErrorMock.mockRestore();
+    alertMock.mockRestore();
   });
 });
