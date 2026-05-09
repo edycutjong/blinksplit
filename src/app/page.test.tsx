@@ -11,6 +11,19 @@ vi.mock("next/navigation", () => ({
 // Mock fetch
 global.fetch = vi.fn();
 
+// Mock getBoundingClientRect for framer-motion interactions
+Element.prototype.getBoundingClientRect = vi.fn(() => ({
+  width: 100,
+  height: 100,
+  top: 0,
+  left: 0,
+  bottom: 0,
+  right: 0,
+  x: 0,
+  y: 0,
+  toJSON: () => {},
+}));
+
 describe("Home Page", () => {
   const mockPush = vi.fn();
 
@@ -92,18 +105,30 @@ describe("Home Page", () => {
   it("handles interaction on FeatureCard and TiltCard (mouse move)", () => {
     render(<Home />);
     
-    // To trigger handleMouseMove, we can fire an event on one of the cards
-    // Usually, they wrap the icons
-    const allCards = document.querySelectorAll('.group');
-    if (allCards.length > 0) {
-      fireEvent.mouseMove(allCards[0], { clientX: 10, clientY: 10 });
+    const scanCard = screen.getByText("AI Receipt Scanning").closest('.group');
+    expect(scanCard).toBeTruthy();
+    if (scanCard) {
+      fireEvent.mouseMove(scanCard, { clientX: 10, clientY: 10 });
     }
 
     const tiltCards = document.querySelectorAll('[style*="transform-style: preserve-3d"]');
-    if (tiltCards.length > 0) {
-      fireEvent.mouseMove(tiltCards[0], { clientX: 10, clientY: 10 });
-      fireEvent.mouseLeave(tiltCards[0]);
-    }
+    expect(tiltCards.length).toBeGreaterThan(0);
+    fireEvent.mouseMove(tiltCards[0], { clientX: 10, clientY: 10 });
+    fireEvent.mouseLeave(tiltCards[0]);
+  });
+
+  it("triggers file input when clicking Launch App or Scan a Receipt Now", () => {
+    render(<Home />);
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const clickSpy = vi.spyOn(fileInput, "click");
+
+    const scanButton = screen.getByText("Scan a Receipt Now");
+    fireEvent.click(scanButton);
+    expect(clickSpy).toHaveBeenCalledTimes(1);
+
+    const launchAppButtons = screen.getAllByText("Launch App");
+    fireEvent.click(launchAppButtons[0]);
+    expect(clickSpy).toHaveBeenCalledTimes(2);
   });
   it("handles FileReader error", async () => {
     const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});

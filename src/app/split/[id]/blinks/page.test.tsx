@@ -172,4 +172,41 @@ describe("PaymentTracker Page", () => {
       expect(screen.queryByText("Alice")).not.toBeInTheDocument();
     });
   });
+
+  it("simulates real-time payments coming in", async () => {
+    vi.useFakeTimers();
+    let resolveFetch: any;
+    (global.fetch as any).mockImplementation(() => new Promise((resolve) => {
+      resolveFetch = resolve;
+    }));
+    
+    await act(async () => {
+      render(
+        <Suspense fallback={<div className="suspense-fallback" />}>
+          <PaymentTracker params={paramsPromise} />
+        </Suspense>
+      );
+    });
+    
+    await act(async () => {
+      resolveFetch({ ok: true, json: async () => ({ blinks: mockPayers }) });
+      await new Promise(process.nextTick);
+    });
+
+    // We need to advance time a bit to let the microtasks flush and React update state
+    await act(async () => {
+      vi.advanceTimersByTime(100);
+    });
+
+    expect(screen.getByText("Alice")).toBeInTheDocument();
+    expect(screen.getAllByText("Pending").length).toBeGreaterThan(0);
+
+    // Advance timers to trigger the setTimeout for Alice (2000ms) and Bob (4500ms)
+    await act(async () => {
+      vi.advanceTimersByTime(5000);
+    });
+
+    // Alice should now be paid
+    expect(screen.queryByText("Pending")).not.toBeInTheDocument();
+  });
 });
