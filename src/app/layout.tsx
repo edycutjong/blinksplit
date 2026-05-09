@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
   description:
     "Snap a receipt. AI splits it. Solana Blinks collect every share in 30 seconds. No app downloads.",
-  metadataBase: new URL("https://100xdevs.vercel.app"),
+  metadataBase: new URL("https://blinksplit.edycu.dev"),
   keywords: [
     "Solana",
     "Blinks",
