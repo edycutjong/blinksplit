@@ -1,13 +1,13 @@
 <div align="center">
   <h1>BlinkSplit ⚡</h1>
   <p><em>Snap a receipt. AI splits it. Drop a Solana Blink in the group chat. Everyone pays in one click.</em></p>
-  <img src="docs/readme.png" alt="BlinkSplit" width="600">
+  <img src="docs/readme.png" alt="BlinkSplit" width="100%">
 
   <br/>
 
   [![Live Demo](https://img.shields.io/badge/🚀_Live-Demo-06b6d4?style=for-the-badge)](https://blinksplit.edycu.dev)
   [![Pitch Video](https://img.shields.io/badge/🎬_Pitch-Video-ef4444?style=for-the-badge)](https://youtube.com/watch?v=DEMO_VIDEO)
-  [![Pitch Deck](https://img.shields.io/badge/📊_Pitch-Deck-f59e0b?style=for-the-badge)](public/pitch/index.html)
+  [![Pitch Deck](https://img.shields.io/badge/📊_Pitch-Deck-f59e0b?style=for-the-badge)](https://blinksplit.edycu.dev/pitch)
   [![Built for Frontier](https://img.shields.io/badge/Colosseum-Frontier_Hackathon-8b5cf6?style=for-the-badge)](https://superteam.fun/earn/listing/100xdevs-frontier-hackathon-track)
 
   <br/>
@@ -26,7 +26,7 @@
 ## 📸 See it in Action
 
 <div align="center">
-  <img src="docs/readme.png" alt="BlinkSplit App Demo" width="800">
+  <img src="docs/readme.png" alt="BlinkSplit App Demo" width="100%">
 </div>
 
 > **Three steps, zero app downloads.** Snap → Split → Blink.
