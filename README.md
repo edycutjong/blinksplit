@@ -198,8 +198,8 @@ npm run ci
 
 **Edy Cu Tjong** — Solo developer
 
-- 𝕏 [@edycutjong](https://x.com/edycutjong)
-- GitHub [@edycutjong](https://github.com/edycutjong)
+- [![X](https://img.shields.io/badge/@edycutjong-000000?style=flat-square&logo=x&logoColor=white)](https://x.com/edycutjong)
+- [![GitHub](https://img.shields.io/badge/@edycutjong-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/edycutjong)
 
 ---
 
