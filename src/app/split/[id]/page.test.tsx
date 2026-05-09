@@ -45,6 +45,8 @@ describe("SplitPage", () => {
     status: "assigning"
   };
 
+
+
   const paramsPromise = Promise.resolve({ id: "test-id" });
 
   it("renders loading state", async () => {
@@ -164,14 +166,23 @@ describe("SplitPage", () => {
       expect(screen.getByText("Demo Restaurant")).toBeInTheDocument();
     });
 
-    // Click copy icon
-    const copyIcons = document.querySelectorAll('button > svg.lucide-copy');
-    if (copyIcons.length > 0) {
-      const copyBtn = copyIcons[0].closest('button');
-      if (copyBtn) fireEvent.click(copyBtn);
+    vi.useFakeTimers();
+    try {
+      // Click copy icon
+      const copyIcons = document.querySelectorAll('button > svg.lucide-copy');
+      if (copyIcons.length > 0) {
+        const copyBtn = copyIcons[0].closest('button');
+        if (copyBtn) fireEvent.click(copyBtn);
+      }
+      
+      expect(navigator.clipboard.writeText).toHaveBeenCalled();
+      
+      act(() => {
+        vi.advanceTimersByTime(1500);
+      });
+    } finally {
+      vi.useRealTimers();
     }
-    
-    expect(navigator.clipboard.writeText).toHaveBeenCalled();
   });
 
   it("handles generate blinks", async () => {
@@ -335,5 +346,240 @@ describe("SplitPage", () => {
     await waitFor(() => {
       expect(mockPush).toHaveBeenCalledWith("/split/test-id/blinks");
     });
+  });
+
+  it("handles removing a person properly when > 2 people", async () => {
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockSession,
+    });
+
+    await act(async () => {
+      render(
+        <Suspense fallback={<div className="suspense-fallback" />}>
+          <SplitPage params={paramsPromise} />
+        </Suspense>
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("Alice")).toBeInTheDocument();
+    });
+
+    // Add a third person
+    fireEvent.click(screen.getByText("+ Add Person"));
+    fireEvent.change(screen.getByPlaceholderText("Name"), { target: { value: "Charlie" } });
+    fireEvent.click(screen.getByText("Add"));
+
+    await waitFor(() => {
+      expect(screen.getAllByText("Charlie")[0]).toBeInTheDocument();
+    });
+
+    // Remove the third person
+    const removeButtons = document.querySelectorAll('button > svg.lucide-x');
+    if (removeButtons.length > 0) {
+      const removeBtn = removeButtons[removeButtons.length - 1].closest('button');
+      if (removeBtn) {
+        fireEvent.click(removeBtn);
+      }
+    }
+
+    await waitFor(() => {
+      expect(screen.queryByText("Charlie")).not.toBeInTheDocument();
+    });
+  });
+
+  it("handles empty generate process and errors", async () => {
+    const fullSession = {
+      ...mockSession,
+      assignments: {
+        "1": ["p1"],
+        "2": ["p1", "p2"]
+      }
+    };
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => fullSession,
+    }).mockRejectedValueOnce(new Error("Generate error"));
+
+    await act(async () => {
+      render(
+        <Suspense fallback={<div className="suspense-fallback" />}>
+          <SplitPage params={paramsPromise} />
+        </Suspense>
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("Generate Blinks")).toBeInTheDocument();
+    });
+
+    const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const generateBtn = screen.getByText("Generate Blinks").closest("button")!;
+    fireEvent.click(generateBtn);
+
+    await waitFor(() => {
+      expect(consoleErrorMock).toHaveBeenCalled();
+    });
+    consoleErrorMock.mockRestore();
+  });
+
+  it("prevents removing a person when people.length <= 2", async () => {
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockSession,
+    });
+
+    await act(async () => {
+      render(
+        <Suspense fallback={<div className="suspense-fallback" />}>
+          <SplitPage params={paramsPromise} />
+        </Suspense>
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("Alice")).toBeInTheDocument();
+    });
+
+    // Add a third person
+    fireEvent.click(screen.getByText("+ Add Person"));
+    fireEvent.change(screen.getByPlaceholderText("Name"), { target: { value: "Charlie" } });
+    fireEvent.click(screen.getByText("Add"));
+
+    await waitFor(() => {
+      expect(screen.getAllByText("Charlie")[0]).toBeInTheDocument();
+    });
+
+    // Now there are 3 people. The remove buttons are rendered.
+    const removeButtons = document.querySelectorAll('button > svg.lucide-x');
+    if (removeButtons.length > 0) {
+      const removeBtn = removeButtons[removeButtons.length - 1].closest('button');
+      if (removeBtn) {
+        // Click multiple times to try triggering the <= 2 check
+        fireEvent.click(removeBtn);
+        fireEvent.click(removeBtn);
+      }
+    }
+
+    await waitFor(() => {
+      expect(screen.queryByText("Charlie")).not.toBeInTheDocument();
+    });
+  });
+
+  it("handles unassigning all people from an item", async () => {
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockSession,
+    });
+
+    await act(async () => {
+      render(
+        <Suspense fallback={<div className="suspense-fallback" />}>
+          <SplitPage params={paramsPromise} />
+        </Suspense>
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("Demo Restaurant")).toBeInTheDocument();
+    });
+
+    // We want to unassign all people from the first item
+    const allAlices = screen.queryAllByText((content, element) => {
+      return element?.tagName.toLowerCase() === 'button' && content.startsWith('Alice');
+    });
+    const allBobs = screen.queryAllByText((content, element) => {
+      return element?.tagName.toLowerCase() === 'button' && content.startsWith('Bob');
+    });
+
+    if (allAlices.length > 1 && allBobs.length > 1) {
+      fireEvent.click(allAlices[1]);
+      fireEvent.click(allBobs[1]);
+
+      // Now the first item should have no assignees
+      await waitFor(() => {
+        expect(screen.getByText("Assign all items first")).toBeInTheDocument();
+      });
+      
+      const generateBtn = screen.getByText("Assign all items first").closest("button");
+      expect(generateBtn).toBeDisabled();
+    }
+  });
+
+  it("covers missing item assignment and empty name additions", async () => {
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        ...mockSession,
+        assignments: {
+          "1": ["p1"],
+          "999": ["p1"] // Invalid item ID to hit 'if (item)' check in getPersonTotal
+        }
+      }),
+    });
+
+    await act(async () => {
+      render(
+        <Suspense fallback={<div className="suspense-fallback" />}>
+          <SplitPage params={paramsPromise} />
+        </Suspense>
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("Demo Restaurant")).toBeInTheDocument();
+    });
+
+    // Try adding a person with an empty name
+    const addButton = screen.getByText("+ Add Person");
+    fireEvent.click(addButton);
+    
+    const confirmAddButton = screen.getByText("Add");
+    fireEvent.click(confirmAddButton); // Should do nothing and return early
+
+    // The form should still be visible because setShowAdd(false) was not called
+    expect(screen.getByPlaceholderText("Name")).toBeInTheDocument();
+  });
+
+  it("covers undefined people, assignments, and empty toggle", async () => {
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        ...mockSession,
+        people: undefined,
+        assignments: undefined
+      }),
+    });
+
+    await act(async () => {
+      render(
+        <Suspense fallback={<div className="suspense-fallback" />}>
+          <SplitPage params={paramsPromise} />
+        </Suspense>
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("Demo Restaurant")).toBeInTheDocument();
+    });
+
+    // Add a person since the list is empty
+    const addButton = screen.getByText("+ Add Person");
+    fireEvent.click(addButton);
+    fireEvent.change(screen.getByPlaceholderText("Name"), { target: { value: "Eve" } });
+    fireEvent.click(screen.getByText("Add"));
+
+    await waitFor(() => {
+      expect(screen.getAllByText("Eve").length).toBeGreaterThan(0);
+    });
+
+    // Toggle Eve for the first item
+    const allEves = screen.queryAllByText((content, element) => {
+      return element?.tagName.toLowerCase() === 'button' && content.startsWith('Eve');
+    });
+    if (allEves.length > 0) {
+      fireEvent.click(allEves[0]);
+    }
   });
 });

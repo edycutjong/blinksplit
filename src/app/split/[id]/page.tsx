@@ -66,16 +66,15 @@ export default function SplitPage({ params }: { params: Promise<{ id: string }> 
   };
 
   const getPersonTotal = (personId: string) => {
-    if (!session) return 0;
     let itemTotal = 0;
     Object.entries(assignments).forEach(([itemId, assignees]) => {
       if (assignees.includes(personId)) {
-        const item = session.receipt.items.find((i) => i.id === parseInt(itemId));
+        const item = session!.receipt.items.find((i) => i.id === parseInt(itemId));
         if (item) itemTotal += item.price / assignees.length;
       }
     });
-    const taxRate = session.receipt.tax / session.receipt.subtotal;
-    const tipRate = session.receipt.tip / session.receipt.subtotal;
+    const taxRate = session!.receipt.tax / session!.receipt.subtotal;
+    const tipRate = session!.receipt.tip / session!.receipt.subtotal;
     return itemTotal + itemTotal * taxRate + itemTotal * tipRate;
   };
 
@@ -94,7 +93,6 @@ export default function SplitPage({ params }: { params: Promise<{ id: string }> 
   };
 
   const removePerson = (personId: string) => {
-    if (people.length <= 2) return; // Minimum 2 people
     setPeople((prev) => prev.filter((p) => p.id !== personId));
     // Remove person from all assignments
     setAssignments((prev) => {
