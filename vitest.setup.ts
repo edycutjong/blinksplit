@@ -40,7 +40,7 @@ vi.mock('framer-motion', async () => {
   const createMockComponent = (Tag: any) => {
     return React.forwardRef((props: any, ref: any) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { initial, animate, exit, transition, whileHover, whileTap, layout, layoutId, ...rest } = props;
+      const { initial, animate, exit, transition, whileHover, whileTap, whileInView, viewport, layout, layoutId, ...rest } = props;
       return React.createElement(Tag, { ref, ...rest });
     });
   };
