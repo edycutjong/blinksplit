@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlinkSplit — Pitch Deck</title>
+  <meta name="description" content="AI Receipt Splitter with Solana Blinks. Snap a receipt, AI splits it, drop a Blink in the group chat.">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --border: rgba(255,255,255,0.06);
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --cyan: #06b6d4;
+      --purple: #8b5cf6;
+      --green: #22c55e;
+      --red: #ef4444;
+      --amber: #f59e0b;
+    }
+
+    html { scroll-behavior: smooth; scroll-snap-type: y mandatory; overflow-y: scroll; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+    /* Fullscreen particle canvas */
+    #particles {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Dot grid overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .slide {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem 2rem;
+      scroll-snap-align: start;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated gradient orbs per slide */
+    .slide .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.35;
+      pointer-events: none;
+      animation: orbFloat 12s ease-in-out infinite;
+    }
+    .slide .orb-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(6,182,212,0.4), transparent 70%);
+      top: -15%; right: -10%;
+      animation-delay: 0s;
+    }
+    .slide .orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(139,92,246,0.35), transparent 70%);
+      bottom: -10%; left: -8%;
+      animation-delay: -4s;
+    }
+    .slide .orb-3 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(34,197,94,0.25), transparent 70%);
+      top: 40%; left: 50%;
+      animation-delay: -8s;
+    }
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -20px) scale(1.08); }
+      66% { transform: translate(-20px, 15px) scale(0.95); }
+    }
+
+    /* Vignette edge glow */
+    .slide::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(6,182,212,0.06) 0%, transparent 55%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .slide::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(6,182,212,0.15), transparent);
+      z-index: 1;
+    }
+
+    /* Scroll-triggered entrance animations */
+    .slide .content {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+    }
+    .slide.visible .content {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .content {
+      max-width: 900px;
+      width: 100%;
+      z-index: 2;
+      position: relative;
+    }
+
+    .slide-number {
+      position: absolute;
+      bottom: 1.5rem;
+      right: 2rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      background: linear-gradient(135deg, var(--text) 40%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    h2 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800; line-height: 1.2; margin-bottom: 1.5rem; }
+    h3 { font-size: 1.25rem; font-weight: 600; color: var(--cyan); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; text-shadow: 0 0 16px rgba(6,182,212,0.3); }
+
+    .tagline { font-size: clamp(1rem, 2vw, 1.4rem); color: var(--text-muted); line-height: 1.6; max-width: 700px; }
+    .highlight { color: var(--cyan); }
+    .highlight-purple { color: var(--purple); }
+    .highlight-green { color: var(--green); }
+    .highlight-red { color: var(--red); }
+
+    .badge {
+      display: inline-block;
+      padding: 0.35rem 0.9rem;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .badge-cyan { background: rgba(6,182,212,0.15); color: var(--cyan); border: 1px solid rgba(6,182,212,0.3); }
+    .badge-purple { background: rgba(139,92,246,0.15); color: var(--purple); border: 1px solid rgba(139,92,246,0.3); }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .card {
+      background: rgba(18,18,26,0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), border-color 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(6,182,212,0.25);
+      box-shadow: 0 8px 32px rgba(6,182,212,0.08), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .card .icon { margin-bottom: 0.75rem; }
+    .card .icon svg { width: 28px; height: 28px; stroke: var(--cyan); stroke-width: 1.5; fill: none; }
+    .card h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .card p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.5; }
+
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+    .flow-step {
+      background: rgba(18,18,26,0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      text-align: center;
+      flex: 1;
+      min-width: 120px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .flow-step:hover {
+      border-color: rgba(6,182,212,0.3);
+      box-shadow: 0 0 20px rgba(6,182,212,0.1);
+    }
+    .flow-step .num { color: var(--cyan); }
+    .flow-step .num svg { width: 32px; height: 32px; stroke: var(--cyan); stroke-width: 1.5; fill: none; }
+    .flow-step .label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; }
+    .flow-arrow { font-size: 1.5rem; color: var(--text-muted); opacity: 0.4; }
+
+    .tech-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.5rem;
+    }
+    .tech-table th, .tech-table td {
+      padding: 0.85rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .tech-table th { color: var(--text-muted); font-weight: 500; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .tech-table td:first-child { font-weight: 600; color: var(--cyan); }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2rem;
+    }
+    .stat {
+      text-align: center;
+      padding: 1.5rem;
+      background: rgba(18,18,26,0.6);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .stat:hover {
+      border-color: rgba(6,182,212,0.3);
+      box-shadow: 0 0 24px rgba(6,182,212,0.1);
+    }
+    .stat .value { font-size: 2.5rem; font-weight: 900; color: var(--cyan); text-shadow: 0 0 20px rgba(6,182,212,0.3); }
+    .stat .label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+    .quote {
+      font-size: clamp(1.3rem, 3vw, 2rem);
+      font-weight: 700;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.4;
+      max-width: 700px;
+      text-align: center;
+      margin: 0 auto;
+    }
+    .quote::before { content: '"'; color: var(--cyan); }
+    .quote::after { content: '"'; color: var(--cyan); }
+
+    .cta-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    .cta-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .cta-links a:hover { transform: translateY(-1px); opacity: 0.9; }
+    .cta-primary {
+      background: linear-gradient(135deg, var(--cyan), #0891b2);
+      color: var(--bg);
+      box-shadow: 0 0 20px rgba(6,182,212,0.3), 0 4px 12px rgba(6,182,212,0.2);
+    }
+    .cta-primary:hover { box-shadow: 0 0 30px rgba(6,182,212,0.5), 0 4px 16px rgba(6,182,212,0.3); }
+    .cta-secondary {
+      background: rgba(18,18,26,0.6);
+      backdrop-filter: blur(12px);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .cta-secondary:hover { border-color: rgba(255,255,255,0.2); box-shadow: 0 0 16px rgba(255,255,255,0.05); }
+
+    .divider { width: 60px; height: 3px; background: var(--cyan); border-radius: 2px; margin: 1.5rem 0; }
+
+    .built-by {
+      margin-top: 3rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+    .built-by strong { color: var(--text); }
+
+    /* Navigation dots */
+    .nav-dots {
+      position: fixed;
+      right: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      z-index: 100;
+    }
+    .nav-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .nav-dot.active { background: var(--cyan); transform: scale(1.4); }
+    .nav-dot:hover { background: rgba(255,255,255,0.5); }
+
+    /* Keyboard nav hint */
+    .nav-hint {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      opacity: 0.4;
+      z-index: 100;
+    }
+
+    @media (max-width: 640px) {
+      .slide { padding: 2rem 1.25rem; }
+      .flow { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); }
+      .nav-dots { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Particle canvas -->
+  <canvas id="particles"></canvas>
+
+  <!-- Navigation -->
+  <nav class="nav-dots" id="navDots"></nav>
+  <div class="nav-hint">↑↓ or scroll to navigate</div>
+
+  <!-- SLIDE 1: Title -->
+  <section class="slide" id="slide-1">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="content" style="text-align: center;">
+      <span class="badge badge-cyan">Colosseum Frontier Hackathon — 100xDevs Track</span>
+      <h1 style="margin-top: 1.5rem;">BlinkSplit <span class="highlight"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -4px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span></h1>
+      <p class="tagline" style="margin: 1.5rem auto 0;">
+        Snap a receipt. <span class="highlight">AI splits it.</span><br>
+        Drop a Solana Blink in the group chat. <span class="highlight-green">Everyone pays in one click.</span>
+      </p>
+      <div class="cta-links" style="justify-content: center; margin-top: 2.5rem;">
+        <a href="https://blinksplit.edycu.dev" target="_blank" class="cta-primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg> Live Demo</a>
+        <a href="https://github.com/edycutjong/blinksplit" target="_blank" class="cta-secondary"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg> GitHub</a>
+      </div>
+    </div>
+    <span class="slide-number">1 / 8</span>
+  </section>
+
+  <!-- SLIDE 2: Problem -->
+  <section class="slide" id="slide-2">
+    <div class="orb orb-2" style="top:-10%;right:-5%"></div>
+    <div class="content">
+      <h3>The Problem</h3>
+      <h2>Splitting a bill is <span class="highlight-red">still broken</span> in 2026</h2>
+      <div class="card-grid">
+        <div class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg></div>
+          <h4>Napkin Math</h4>
+          <p>"Who had the appetizer?" — mental gymnastics at every group dinner</p>
+        </div>
+        <div class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <h4>Slow Settlement</h4>
+          <p>Venmo requests take days. Bank transfers take longer. Someone always "forgets."</p>
+        </div>
+        <div class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+          <h4>App Lock-in</h4>
+          <p>Everyone needs the same payment app. International groups? Good luck.</p>
+        </div>
+        <div class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+          <h4>Crypto Friction</h4>
+          <p>Sending tokens means pasting wallet addresses, calculating amounts manually</p>
+        </div>
+      </div>
+    </div>
+    <span class="slide-number">2 / 8</span>
+  </section>
+
+  <!-- SLIDE 3: Solution -->
+  <section class="slide" id="slide-3">
+    <div class="orb orb-1" style="bottom:-15%;left:-5%"></div>
+    <div class="orb orb-3"></div>
+    <div class="content">
+      <h3>The Solution</h3>
+      <h2>AI + Solana Blinks = <span class="highlight">one-click payment links</span></h2>
+      <p class="tagline">Upload a receipt → AI extracts every item → assign to friends → generate shareable Blink URLs → everyone pays their exact USDC share.</p>
+      <div class="flow">
+        <div class="flow-step"><div class="num"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></div><div class="label">Snap Receipt</div></div>
+        <span class="flow-arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+        <div class="flow-step"><div class="num"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></div><div class="label">AI Parses</div></div>
+        <span class="flow-arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+        <div class="flow-step"><div class="num"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="label">Assign Items</div></div>
+        <span class="flow-arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+        <div class="flow-step"><div class="num"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><div class="label">Generate Blinks</div></div>
+        <span class="flow-arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+        <div class="flow-step"><div class="num"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="label">Everyone Pays</div></div>
+      </div>
+    </div>
+    <span class="slide-number">3 / 8</span>
+  </section>
+
+  <!-- SLIDE 4: Why Blinks -->
+  <section class="slide" id="slide-4">
+    <div class="orb orb-2" style="top:10%;left:-10%"></div>
+    <div class="content">
+      <h3>Why Solana Actions / Blinks</h3>
+      <h2>The <span class="highlight-purple">entire product IS</span> the Blink</h2>
+      <p class="tagline">BlinkSplit is impossible without Solana Actions. A single URL unfurls into a one-click payment interface inside X, Telegram, Discord — any app.</p>
+      <div class="divider"></div>
+      <div class="card-grid" style="grid-template-columns: 1fr 1fr;">
+        <div class="card">
+          <h4 style="color: var(--red);">Without Blinks</h4>
+          <p>Custom payment app + deep-link integration + wallet-specific SDKs for every wallet + manual amount entry</p>
+        </div>
+        <div class="card" style="border-color: rgba(6,182,212,0.3);">
+          <h4 style="color: var(--green);">With Blinks</h4>
+          <p>One URL. Paste anywhere. Click. Pay. Done. Works with Phantom, Backpack, Solflare — any Actions-compatible wallet.</p>
+        </div>
+      </div>
+    </div>
+    <span class="slide-number">4 / 8</span>
+  </section>
+
+  <!-- SLIDE 5: Tech Stack -->
+  <section class="slide" id="slide-5">
+    <div class="orb orb-1" style="top:-10%;left:60%"></div>
+    <div class="content">
+      <h3>Architecture</h3>
+      <h2>Production-grade. <span class="highlight">Zero smart contracts.</span></h2>
+      <table class="tech-table">
+        <thead><tr><th>Layer</th><th>Technology</th></tr></thead>
+        <tbody>
+          <tr><td>Frontend</td><td>Next.js 16 (App Router), React 19, Tailwind CSS v4</td></tr>
+          <tr><td>AI Engine</td><td>GPT-4o Vision — structured JSON receipt parsing</td></tr>
+          <tr><td>Database</td><td>Supabase (PostgreSQL + Realtime subscriptions)</td></tr>
+          <tr><td>Blockchain</td><td>Solana Devnet — @solana/actions + @solana/spl-token (USDC)</td></tr>
+          <tr><td>Deploy</td><td>Vercel (zero-config Next.js)</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top: 1.25rem; color: var(--text-muted); font-size: 0.85rem;">
+        Transaction: <code style="color: var(--cyan);">createTransferCheckedInstruction</code> — standard SPL token transfer, no custom programs.
+      </p>
+    </div>
+    <span class="slide-number">5 / 8</span>
+  </section>
+
+  <!-- SLIDE 6: Key Features -->
+  <section class="slide" id="slide-6">
+    <div class="orb orb-2" style="bottom:-10%;right:-5%"></div>
+    <div class="orb orb-3" style="top:20%;left:-8%"></div>
+    <div class="content">
+      <h3>Features</h3>
+      <h2>Everything <span class="highlight">production-ready</span></h2>
+      <div class="card-grid">
+        <div class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></div>
+          <h4>AI Receipt OCR</h4>
+          <p>GPT-4o Vision extracts items, prices, tax, and tip — no manual entry</p>
+        </div>
+        <div class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <h4>Solana Blinks</h4>
+          <p>One-click USDC payments via shareable URLs — works in X, Telegram, Discord</p>
+        </div>
+        <div class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+          <h4>Real-Time Tracking</h4>
+          <p>Live payment dashboard powered by Supabase Realtime — see who paid instantly</p>
+        </div>
+        <div class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/><path d="M7 16.5h10"/></svg></div>
+          <h4>Demo Mode</h4>
+          <p>Fully functional without API keys — built-in demo data for instant testing</p>
+        </div>
+        <div class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.001"/><path d="M10 8h.001"/><path d="M14 8h.001"/></svg></div>
+          <h4>Zero App Required</h4>
+          <p>Friends just click the link + sign with any Solana wallet. No downloads.</p>
+        </div>
+        <div class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg></div>
+          <h4>Instant USDC Settlement</h4>
+          <p>No holding periods, no price volatility — stablecoin transfers in seconds</p>
+        </div>
+      </div>
+    </div>
+    <span class="slide-number">6 / 8</span>
+  </section>
+
+  <!-- SLIDE 7: Quality -->
+  <section class="slide" id="slide-7">
+    <div class="orb orb-1" style="top:30%;right:-12%"></div>
+    <div class="content" style="text-align: center;">
+      <h3>Code Quality</h3>
+      <h2>Not a prototype. <span class="highlight-green">Production code.</span></h2>
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="value">109</div>
+          <div class="label">Tests Passing</div>
+        </div>
+        <div class="stat">
+          <div class="value" style="color: var(--green);">100%</div>
+          <div class="label">Code Coverage</div>
+        </div>
+        <div class="stat">
+          <div class="value">16</div>
+          <div class="label">Test Files</div>
+        </div>
+        <div class="stat">
+          <div class="value">0</div>
+          <div class="label">Lint Warnings</div>
+        </div>
+      </div>
+      <p style="margin-top: 2rem; color: var(--text-muted); font-size: 0.9rem;">
+        CI pipeline: <code style="color: var(--cyan);">npm run ci</code> → ESLint + TypeScript strict + Vitest coverage
+      </p>
+    </div>
+    <span class="slide-number">7 / 8</span>
+  </section>
+
+  <!-- SLIDE 8: Close -->
+  <section class="slide" id="slide-8">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="content" style="text-align: center;">
+      <p class="quote">If crypto can split a dinner bill better than Venmo, we've crossed the adoption chasm.</p>
+      <div class="divider" style="margin: 2rem auto;"></div>
+      <h2>BlinkSplit <span class="highlight"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -3px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span></h2>
+      <p class="tagline" style="margin: 0 auto;">Upload. Split. Drop the link.</p>
+      <div class="cta-links" style="justify-content: center; margin-top: 2rem;">
+        <a href="https://blinksplit.edycu.dev" target="_blank" class="cta-primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg> Try the Live Demo</a>
+        <a href="https://github.com/edycutjong/blinksplit" target="_blank" class="cta-secondary"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg> View Source</a>
+      </div>
+      <div class="built-by">
+        <p>Built solo by <strong>Edy Cu Tjong</strong></p>
+        <p style="margin-top: 0.25rem;">
+          <a href="https://x.com/edycutjong" target="_blank" style="color: var(--text-muted); text-decoration: none;">𝕏 @edycutjong</a>
+          &nbsp;·&nbsp;
+          <a href="https://github.com/edycutjong" target="_blank" style="color: var(--text-muted); text-decoration: none;">GitHub @edycutjong</a>
+        </p>
+      </div>
+    </div>
+    <span class="slide-number">8 / 8</span>
+  </section>
+
+  <script>
+    // ── Particle system ──
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    const particles = [];
+    const PARTICLE_COUNT = 60;
+
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    class Particle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * W;
+        this.y = Math.random() * H;
+        this.r = Math.random() * 1.5 + 0.3;
+        this.vx = (Math.random() - 0.5) * 0.15;
+        this.vy = (Math.random() - 0.5) * 0.15;
+        this.alpha = Math.random() * 0.4 + 0.1;
+        const colors = ['6,182,212', '139,92,246', '34,197,94'];
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > W) this.vx *= -1;
+        if (this.y < 0 || this.y > H) this.vy *= -1;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color},${this.alpha})`;
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+
+    function drawLines() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(6,182,212,${0.06 * (1 - dist / 120)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, W, H);
+      particles.forEach(p => { p.update(); p.draw(); });
+      drawLines();
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // ── Navigation dots ──
+    const totalSlides = 8;
+    const dotsContainer = document.getElementById('navDots');
+    for (let i = 1; i <= totalSlides; i++) {
+      const dot = document.createElement('button');
+      dot.className = 'nav-dot' + (i === 1 ? ' active' : '');
+      dot.setAttribute('aria-label', `Slide ${i}`);
+      dot.onclick = () => document.getElementById(`slide-${i}`).scrollIntoView({ behavior: 'smooth' });
+      dotsContainer.appendChild(dot);
+    }
+
+    // ── Scroll observer: active dot + entrance animation ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          const slideNum = entry.target.id.split('-')[1];
+          document.querySelectorAll('.nav-dot').forEach((d, i) => {
+            d.classList.toggle('active', i === parseInt(slideNum) - 1);
+          });
+        }
+      });
+    }, { threshold: 0.35 });
+
+    for (let i = 1; i <= totalSlides; i++) {
+      observer.observe(document.getElementById(`slide-${i}`));
+    }
+
+    // ── Keyboard navigation ──
+    document.addEventListener('keydown', (e) => {
+      const active = document.querySelector('.nav-dot.active');
+      const idx = [...document.querySelectorAll('.nav-dot')].indexOf(active);
+      if ((e.key === 'ArrowDown' || e.key === ' ') && idx < totalSlides - 1) {
+        e.preventDefault();
+        document.getElementById(`slide-${idx + 2}`).scrollIntoView({ behavior: 'smooth' });
+      } else if (e.key === 'ArrowUp' && idx > 0) {
+        e.preventDefault();
+        document.getElementById(`slide-${idx}`).scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  </script>
+
+</body>
+</html>
