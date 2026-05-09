@@ -45,10 +45,14 @@ describe('Blinks SDK', () => {
     service = new BlinkSplitService();
     process.env = { ...originalEnv };
     vi.clearAllMocks();
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {
     process.env = originalEnv;
+    vi.restoreAllMocks();
   });
 
   describe('generateBlinkUrl', () => {

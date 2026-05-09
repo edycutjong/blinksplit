@@ -110,10 +110,12 @@ describe("store", () => {
     });
 
     it("throws error if insert fails", async () => {
+      const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
       (supabase.insert as any).mockResolvedValue({ error: new Error("Insert failed") });
       const receipt = getDemoReceipt();
       
       await expect(createSplit(receipt)).rejects.toThrow("Failed to create split");
+      consoleErrorMock.mockRestore();
     });
   });
 
@@ -141,12 +143,14 @@ describe("store", () => {
     });
 
     it("returns null if update fails", async () => {
+      const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
       (supabase.update as any).mockReturnValue({
         eq: vi.fn().mockResolvedValue({ error: new Error("Update failed") })
       });
       
       const result = await updateAssignments("test-id", {}, []);
       expect(result).toBeNull();
+      consoleErrorMock.mockRestore();
     });
 
     it("returns null if getSplit fails after update", async () => {
@@ -217,6 +221,7 @@ describe("store", () => {
     });
 
     it("returns null if update fails", async () => {
+      const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
       (supabase.select as any).mockReturnValue({
         eq: vi.fn().mockReturnValue({
           single: vi.fn().mockResolvedValue({ data: { id: "test", receipt: { items: [], subtotal: 10, tax: 1, tip: 1 }, people: [], assignments: {} }, error: null })
@@ -229,6 +234,7 @@ describe("store", () => {
 
       const result = await generateBlinks("test-split", "http://localhost");
       expect(result).toBeNull();
+      consoleErrorMock.mockRestore();
     });
 
     it("returns null if final getSplit returns undefined", async () => {
@@ -321,6 +327,7 @@ describe("store", () => {
     });
 
     it("returns null if update fails", async () => {
+      const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
       (supabase.select as any).mockReturnValue({
         eq: vi.fn().mockReturnValue({
           single: vi.fn().mockResolvedValue({ data: { blinks: [] }, error: null })
@@ -333,6 +340,7 @@ describe("store", () => {
 
       const result = await markPaid("test-split", "p1");
       expect(result).toBeNull();
+      consoleErrorMock.mockRestore();
     });
 
     it("returns null if final getSplit returns undefined", async () => {

@@ -32,6 +32,7 @@ describe('Receipt Parser', () => {
   });
 
   it('should use fallback demo data when OPENAI_API_KEY is not set', async () => {
+    const consoleLogMock = vi.spyOn(console, 'log').mockImplementation(() => {});
     delete process.env.OPENAI_API_KEY;
 
     const result = await parseReceipt('base64string');
@@ -40,6 +41,8 @@ describe('Receipt Parser', () => {
     expect(result.source).toBe('fallback');
     expect(result.receipt.restaurant).toBe('Demo Resto');
     expect(storeModule.getDemoReceipt).toHaveBeenCalled();
+    
+    consoleLogMock.mockRestore();
   });
 
   it('should return AI parsed data when API call succeeds', async () => {
@@ -153,6 +156,7 @@ describe('Receipt Parser', () => {
   });
 
   it('should use fallback if API call fails', async () => {
+    const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
     process.env.OPENAI_API_KEY = 'test-key';
 
     global.fetch = vi.fn().mockResolvedValue({
@@ -165,9 +169,12 @@ describe('Receipt Parser', () => {
     expect(result.success).toBe(true);
     expect(result.source).toBe('fallback');
     expect(result.receipt.restaurant).toBe('Demo Resto');
+    
+    consoleErrorMock.mockRestore();
   });
 
   it('should use fallback if empty response', async () => {
+    const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
     process.env.OPENAI_API_KEY = 'test-key';
 
     global.fetch = vi.fn().mockResolvedValue({
@@ -180,6 +187,8 @@ describe('Receipt Parser', () => {
     expect(result.success).toBe(true);
     expect(result.source).toBe('fallback');
     expect(result.receipt.restaurant).toBe('Demo Resto');
+    
+    consoleErrorMock.mockRestore();
   });
   it('should handle missing fields and string prices', async () => {
     process.env.OPENAI_API_KEY = 'test-key';
