@@ -60,7 +60,7 @@ export async function GET(
   // Solana Actions GET response (Blink metadata)
   const payload = {
     type: "action",
-    icon: "https://blinksplit.vercel.app/icon-512.png",
+    icon: "https://blinksplit.edycu.dev/icon-512.png",
     title: `BlinkSplit: Pay ${blink.name}'s Share`,
     description: `${blink.name} owes $${blink.totalOwed.toFixed(2)} for dinner at ${session.receipt.restaurant}. Items: ${blink.items.map((i) => i.name).join(", ")}`,
     label: `Pay $${blink.totalOwed.toFixed(2)} USDC`,
