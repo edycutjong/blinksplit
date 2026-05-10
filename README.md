@@ -1,6 +1,6 @@
 <div align="center">
   <h1>BlinkSplit ⚡</h1>
-  > <p><em>Snap a receipt. AI splits it. Drop a Solana Blink in the group chat. Everyone pays in one click.</em></p>
+  <p><em>Snap a receipt. AI splits it. Drop a Solana Blink in the group chat. Everyone pays in one click.</em></p>
   <img src="docs/readme.png" alt="BlinkSplit" width="100%">
 
   <br/>
