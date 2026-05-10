@@ -165,7 +165,7 @@ export default function Home() {
       <nav className="fixed top-0 inset-x-0 z-50 border-b border-white/5 bg-[#0A0A0A]/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 font-brand font-bold text-xl tracking-tight">
-            <Image src="/logo.svg" alt="BlinkSplit Logo" width={32} height={32} className="w-8 h-8 drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]" />
+            <Image src="/logo.svg" alt="BlinkSplit Logo" width={32} height={32} priority className="w-8 h-8 drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]" />
             BlinkSplit
           </div>
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/60">
