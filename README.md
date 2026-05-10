@@ -1,6 +1,6 @@
 <div align="center">
   <h1>BlinkSplit ⚡</h1>
-  <p><em>Snap a receipt. AI splits it. Drop a Solana Blink in the group chat. Everyone pays in one click.</em></p>
+  > <p><em>Snap a receipt. AI splits it. Drop a Solana Blink in the group chat. Everyone pays in one click.</em></p>
   <img src="docs/readme.png" alt="BlinkSplit" width="100%">
 
   <br/>
@@ -12,12 +12,12 @@
 
   <br/>
 
-  ![Next.js](https://img.shields.io/badge/Next.js_16-black?style=flat-square&logo=next.js)
-  ![Solana](https://img.shields.io/badge/Solana-9945FF?style=flat-square&logo=solana&logoColor=white)
-  ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white)
-  ![OpenAI](https://img.shields.io/badge/GPT--4o_Vision-412991?style=flat-square&logo=openai&logoColor=white)
-  ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
-  ![Coverage](https://img.shields.io/badge/Coverage-100%25-22c55e?style=flat-square)
+  ![Next.js](https://img.shields.io/badge/Next.js_16-black?style=flat&logo=next.js)
+  ![Solana](https://img.shields.io/badge/Solana-9945FF?style=flat&logo=solana&logoColor=white)
+  ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat&logo=supabase&logoColor=white)
+  ![OpenAI](https://img.shields.io/badge/GPT--4o_Vision-412991?style=flat&logo=openai&logoColor=white)
+  ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
+  [![BlinkSplit CI](https://github.com/edycutjong/blinksplit/actions/workflows/ci.yml/badge.svg)](https://github.com/edycutjong/blinksplit/actions/workflows/ci.yml)
 
 </div>
 
